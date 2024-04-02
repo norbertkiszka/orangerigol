@@ -113,6 +113,9 @@ add_apt_sources()
 	build_info "Adding apt sources ..."
 	local release="$1"
 	local aptsrcfile="$DEST/etc/apt/sources.list"
+	# Make sure sources.list exists
+	mkdir -p $DEST/etc/apt
+	touch "${aptsrcfile}"
 	cat > "$aptsrcfile" <<EOF
 deb ${SOURCES} ${release} main contrib non-free non-free-firmware
 # deb-src ${SOURCES} ${release} main contrib non-free 
