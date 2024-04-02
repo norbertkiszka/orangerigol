@@ -54,7 +54,7 @@ prepare_host()
 		build_error "This scripts requires a Debian based distrbution."
 	fi
 
-	apt-get -y --no-install-recommends --fix-missing cowsay || true
+	apt-get -y --no-install-recommends --fix-missing install cowsay || true
 	
 	apt-get -y --no-install-recommends --fix-missing install \
 		        tar mtools u-boot-tools pv bc git \
