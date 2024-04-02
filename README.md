@@ -36,4 +36,8 @@ Soc | Boards |
 - Oscilloscope app is not fully ported.
 - As for now, it does support only Debian 12 "bookworm".
 - Currently tested only on a Rigol DHO924S.
-- Boot time ~33 seconds.
+- Boot time ~33 seconds (to a GDM3 graphical login manager). After ~6 seconds autologin will be performed.
+
+## Default password
+
+Password rigol, both for a rigol and root users.
