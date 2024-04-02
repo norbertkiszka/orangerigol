@@ -2,11 +2,11 @@
 
 This is a build script to create Debian/Linux (version 12 currently which is newest stable) based system to work on a Rigol oscilloscopes based on a RK3399 CPU (arm64).
 
-Uses user friendly menus and messages.
+User friendly menus and messages.
 
 It can install desktop system based on Mate enviroment (supported and popular fork of a Gnome 2).
 
-Its possible to flash SD card directly from this script.
+Its possible to flash SD card directly from menu in this script.
 
 ## Currently supported boards (devices)
 
