@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/kdeconnect-indicator
+Hidden=false
+Name[en_US]=kdeconnect-indicator
+Name=kdeconnect-indicator
+Comment[en_US]=
+Comment=
+X-MATE-Autostart-Delay=3

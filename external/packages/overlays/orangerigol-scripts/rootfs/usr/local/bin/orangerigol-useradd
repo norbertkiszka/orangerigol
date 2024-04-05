@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Author: Norbert Kiszka and others
+# License: GPL v2
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US:en"
+export LC_CTYPE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+DEBUSER=$1
+DEBUSER_UID=$2
+
+if [ "${EUID}" != 0 ]; then
+	echo "This script requires root privileges, trying to use sudo..."
+	sudo $0 $*
+	exit $?
+fi
+
+# Trim white spaces.
+DEBUSER=`echo -n $DEBUSER`
+DEBUSER_UID=`echo -n $DEBUSER_UID`
+
+if [ $DEBUSER == "" ] ; then
+	echo "Cant add user with empty (null) name."
+	exit 1
+fi
+
+if [ "$(id -u $DEBUSER 2> /dev/null)" != "" ] ; then
+	echo "Cant add user. User with name $DEBUSER already exists."
+	exit 1
+fi
+
+if [ "$DEBUSER_UID" != "" ] ; then
+	TEMP_USERNAME="$(id -nu $DEBUSER_UID 2> /dev/null)" || true
+	if [ "$TEMP_USERNAME" != "" ] ; then
+		echo "Cant add user with id $DEBUSER_UID. Its already occupied by $TEMP_USERNAME."
+		exit 1
+	fi
+fi
+
+mkdir -p /home/$DEBUSER
+chmod 755 /home
+
+if [ "$DEBUSER_UID" == "" ] ; then
+	useradd -p $DEBUSER -s /bin/bash -U $DEBUSER -d /home/$DEBUSER
+	DEBUSER_UID=$(id -u $DEBUSER)
+else
+	useradd -p $DEBUSER -s /bin/bash -u $DEBUSER_UID -U $DEBUSER -d /home/$DEBUSER
+fi
+
+cp -R /etc/skel/.* /home/$DEBUSER
+chown -R $DEBUSER_UID:$DEBUSER_UID /home/$DEBUSER
+chmod 700 /home/$DEBUSER
+echo "$DEBUSER:$DEBUSER" | chpasswd
+adduser $DEBUSER sudo_nopasswd || true
+adduser $DEBUSER adm || true
+adduser $DEBUSER video || true
+adduser $DEBUSER plugdev || true
+adduser $DEBUSER dialout || true
+adduser $DEBUSER audio || true
+adduser $DEBUSER netdev || true
+adduser $DEBUSER bluetooth || true
+mkdir -p /etc/orangerigol
+touch /etc/orangerigol/build_added_users
+[ "$(cat "/etc/orangerigol/build_added_users" | grep "$DEBUSER")" != "" ] || echo "$DEBUSER" >> "/etc/orangerigol/build_added_users"
+echo "User $DEBUSER was added and setup correctly with id: $DEBUSER_UID"

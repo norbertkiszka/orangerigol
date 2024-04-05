@@ -1,0 +1,36 @@
+[Default Applications]
+video/mp4=smplayer.desktop
+audio/flac=org.clementine_player.Clementine.desktop
+audio/x-flac=org.clementine_player.Clementine.desktop
+audio/mpeg=org.clementine_player.Clementine.desktop
+audio/x-mpegurl=org.clementine_player.Clementine.desktop
+audio/x-scpls=org.clementine_player.Clementine.desktop
+audio/x-vorbis+ogg=org.clementine_player.Clementine.desktop
+audio/x-wav=org.clementine_player.Clementine.desktop
+video/mpeg=smplayer.desktop
+video/mp2t=smplayer.desktop
+video/msvideo=smplayer.desktop
+video/quicktime=smplayer.desktop
+video/webm=smplayer.desktop
+video/x-avi=smplayer.desktop
+video/x-flv=smplayer.desktop
+video/x-matroska=smplayer.desktop
+video/x-mpeg=smplayer.desktop
+video/x-ogm+ogg=smplayer.desktop
+x-scheme-handler/http=firefox-esr.desktop
+x-scheme-handler/https=firefox-esr.desktop
+text/html=firefox-esr.desktop
+x-scheme-handler/about=firefox-esr.desktop
+x-scheme-handler/mailto=org.gnome.Evolution.desktop
+application/x-extension-eml=org.gnome.Evolution.desktop
+message/rfc822=org.gnome.Evolution.desktop
+inode/directory=caja-folder-handler.desktop
+text/plain=pluma.desktop
+image/bmp=eom.desktop
+image/gif=eom.desktop
+image/jpeg=eom.desktop
+image/png=eom.desktop
+image/tiff=eom.desktop
+application/pdf=atril.desktop
+
+[Added Associations]

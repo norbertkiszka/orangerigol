@@ -3,11 +3,15 @@
 # Author: Norbert Kiszka and others
 # License: GPL v2
 
+# TODO: this should be rewrited
 build_image()
 {
 	build_info "Building image"
-	VER="v0.1"
-	IMAGENAME="OrangeRigol_${BOARD}_Debian_${DISTRO}_${IMAGETYPE}_${KERNEL_NAME}_${VER}"
+	IMAGENAME="OrangeRigol-v${BUILD_VERSION_TEXT}"
+	[ "${BUILD_GIT_SHORT}" == "" ] || IMAGENAME="${IMAGENAME}-${BUILD_GIT_SHORT}"
+	IMAGENAME="${IMAGENAME}_${BOARD}_Debian_${DISTRO}"
+	IMAGENAME="${IMAGENAME}_${IMAGETYPE}"
+	IMAGENAME="${IMAGENAME}_${KERNEL_NAME}"
 	IMAGE="$BUILD/images/$IMAGENAME.img"
 
 	if [ ! -d $BUILD/images ]; then
@@ -26,7 +30,7 @@ build_image()
 	local GPTIMG_MIN_SIZE=$(expr $IMG_ROOTFS_SIZE \* 1024 + \( $(((${ROOTFS_START}))) \) \* 512)
 	local GPT_IMAGE_SIZE=$(expr $GPTIMG_MIN_SIZE \/ 1024 \/ 1024 + 2)
 
-	build_info "Creating empty image ..."
+	build_info "Preparing empty image ..."
 	
 	dd if=/dev/zero of=${IMAGE}2 bs=1M count=$(expr $IMG_ROOTFS_SIZE  \/ 1024 )
 	

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Author: Norbert Kiszka and others
+# License: GPL v2
+
+set -e
+export DEBIAN_FRONTEND=noninteractive
+
+sed -i '/en_US.UTF-8 UTF-8/s/^# //g' /etc/locale.gen
+locale-gen
+echo -e "LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US:en\"\nLC_CTYPE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" > /etc/default/locale
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US:en"
+export LC_CTYPE="en_US.UTF-8" 2> /dev/null
+export LC_ALL="en_US.UTF-8" 2> /dev/null
+
+addgroup adm --system --quiet || true
+addgroup video --system --quiet || true
+addgroup plugdev --system --quiet || true
+addgroup audio --system --quiet || true
+addgroup netdev --system --quiet || true
+addgroup bluetooth --system --quiet || true
+
+orangerigol-install-packages-base
+
+mkdir -p /root
+cp /etc/skel/.bashrc /root
+
+update-alternatives --set editor /bin/nano
+update-alternatives  --auto editor
+
+mkdir -p /etc/sudoers.d
+addgroup --firstgid 1100 --quiet sudo_nopasswd || true
+echo "%sudo_nopasswd	ALL=NOPASSWD: ALL" > /etc/sudoers.d/group-sudo_nopasswd

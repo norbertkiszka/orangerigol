@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Author: Norbert Kiszka and others
+# License: GPL v2
+
+set -e
+export DEBIAN_FRONTEND=noninteractive
+
+orangerigol-install-packages-desktop-mate
+
+update-alternatives  --set x-session-manager /usr/bin/mate-session
+update-alternatives  --auto x-session-manager
+
+update-alternatives --install /usr/share/images/desktop-base/desktop-background desktop-background /usr/share/images/microscope.png 80 || true
+update-alternatives  --set desktop-background /usr/share/images/microscope.png || true
+update-alternatives  --auto desktop-background || true
+
+systemctl mask lm-sensors.service || true
+systemctl mask e2scrub_reap.service || true
+systemctl mask ModemManager.service || true
+#systemctl mask accounts-daemon.service || true
+systemctl mask avahi-daemon.service || true
+systemctl mask brltty.service || true
+systemctl mask debug-shell.service || true
+systemctl mask pppd-dns.service || true
+systemctl mask upower.service || true
+systemctl mask sysstat.service || true
+systemctl mask getty@tty1.service || true
+

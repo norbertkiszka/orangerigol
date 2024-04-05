@@ -84,7 +84,7 @@ compile_module()
 	fi
 
 	# install module
-	build_info "Comiling kernel modules ..."
+	build_info "Compiling kernel modules ..."
 	make -C $LINUX ARCH="${ARCH}" CROSS_COMPILE=$TOOLS -j${CORES} modules
 	build_info "Installing kernel modules in ${BUILD} ..."
 	make -C $LINUX ARCH="${ARCH}" CROSS_COMPILE=$TOOLS -j${CORES} modules_install INSTALL_MOD_PATH=$BUILD
