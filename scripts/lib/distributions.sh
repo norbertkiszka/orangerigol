@@ -56,14 +56,14 @@ deboostrap_rootfs() {
 
 	chroot rootfs /debootstrap/debootstrap --second-stage
 	
-	mkdir -p $TEMP/rootfs/orangerigol
+	mkdir -p $TEMP/rootfs/etc/orangerigol
 	echo "debootstrap" > "${TEMP}/rootfs/etc/orangerigol/buildstage"
 	
 	tar -C $TEMP/rootfs -a -cf $TGZ .
 	rm -fr $TEMP/rootfs
 	build_info "Base system is prepared in ${TGZ}"
 
-	cd -
+	cd - > /dev/null
 	build_info "Entered directory `pwd`"
 }
 
@@ -251,11 +251,6 @@ prepare_env()
 	
 	mkdir -p $DEST
 	
-	# dirs workaround
-	mkdir -p "$DEST/var/lib/alsa"
-	mkdir -p "$DEST/etc/ssh"
-	mkdir -p "$DEST/usr/local"
-	
 	ROOTFS="${DISTRO}-base-${ARCH}.tar.gz"
 	METHOD="debootstrap"
 	SOURCES="http://ftp.de.debian.org/debian/"
@@ -314,7 +309,7 @@ EOF
 
 	#cd $BUILD
 	#tar czf ${DISTRO}_server_rootfs.tar.gz rootfs
-	#cd -
+	#cd - > /dev/null
 	
 	build_info "Base packages installed."
 }
