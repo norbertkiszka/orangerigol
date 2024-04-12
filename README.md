@@ -42,7 +42,7 @@ Next menu is a "main menu". To start build process, enter first option (press en
 
 Build process will take couple hours, especially if its first time.
 
-After that, You can run this script again, and You should see one more option (should be last one) to flash image into SD card. After flashing, it will resize filesystem in order to use full card capacity.
+After that, You can run this script again, and You should see one more option (last one) to flash image into SD card. After flashing, it will resize filesystem in order to use full card capacity.
 
 If current SD card is mounted in Your host, it will ask for Your permission to umount it. If You dont use its contents, its safe to press enter here.
 
@@ -57,7 +57,11 @@ Finally You can remove card from a card reader and put it into device. Now You c
 - Preinstalled desktop setup with Mate enviroment (supported and popular fork of a Gnome 2) - ready to use from first start.
 - Possibility to flash SD card directly from a menu in this script. After flashing, it will resize fs to fullfil whole SD card.
 
-## Screenshots and videos
+## Videos and screenshots
+
+[![Orange Rigol v0.2.0.1](https://img.youtube.com/vi/2y0E4PasLPY/0.jpg)](https://www.youtube.com/watch?v=2y0E4PasLPY)
+
+[![Rigol DHO924S - Debian Linux 3D acceleration proof (Tux Racer)](https://img.youtube.com/vi/ca_y4zmKaQc/0.jpg)](https://www.youtube.com/watch?v=ca_y4zmKaQc)
 
 ![Platform menu](https://raw.githubusercontent.com/norbertkiszka/rigol-orangerigol-build/master/screenshots/screenshot-1.png)
 
@@ -68,10 +72,6 @@ Finally You can remove card from a card reader and put it into device. Now You c
 ![Text input - SD card path](https://raw.githubusercontent.com/norbertkiszka/rigol-orangerigol-build/master/screenshots/screenshot-4.png)
 
 ![SD card flashing confirmation](https://raw.githubusercontent.com/norbertkiszka/rigol-orangerigol-build/master/screenshots/screenshot-5.png)
-
-Video:
-
-[![Rigol DHO924S - Debian Linux 3D acceleration proof (Tux Racer)](https://img.youtube.com/vi/ca_y4zmKaQc/0.jpg)](https://www.youtube.com/watch?v=ca_y4zmKaQc)
 
 ## Current status
 
