@@ -15,7 +15,7 @@ SoC | Boards |
 
 More devices are planned.
 
-Detailed list - for SEO:
+Detailed oscilloscopes list for SEO:
 
 - Rigol DHO924S
 - Rigol DHO924
