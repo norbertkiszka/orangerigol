@@ -57,7 +57,11 @@ resume1.code
 *~
 \#*#
 
-kernel-*
-uboot-*
+# External repositories:
+kernel*
+uboot*
+grub*
 toolchain
 output
+User variables:
+/vars-user.sh

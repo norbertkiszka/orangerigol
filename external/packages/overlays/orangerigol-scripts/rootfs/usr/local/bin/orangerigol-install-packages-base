@@ -30,6 +30,6 @@ pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add openfpgaloader ethto
 pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add libdwarf++0 libdwarf-dev openssl ca-certificates libssl-dev
 # pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add pulseaudio libunwind-16 libunwind-16-dev
 pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add sudo net-tools g++ libjpeg-dev unrar sshfs avrdude dfu-programmer emu8051
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add esptool gputils simavr avrp net-tools ntp ntpdate
+pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add esptool gputils simavr avrp net-tools ntp ntpdate efibootmgr
 
 packages_install_all

@@ -52,10 +52,11 @@ package_install_key()
 	COMMAND="apt-get install "
 	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep "yes")" == "" ] || COMMAND+=" -y "
 	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep "norecommends")" == "" ] || COMMAND+=" --no-install-recommends "
-	COMMAND+=${PACKAGES_LISTS[$KEY]}
+	COMMAND+="${PACKAGES_LISTS[$KEY]}"
 	
 	((NUM=KEY+1))
 	echo -e "\033[0;32mInstalling packages part ${NUM}/${#PACKAGES_LISTS[@]}\033[0m"
+	echo -e "\033[0;32mPackages to install: ${PACKAGES_LISTS[$KEY]}\033[0m"
 	$COMMAND
 }
 

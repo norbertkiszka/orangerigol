@@ -3,11 +3,12 @@
 # Author: Norbert Kiszka and others
 # License: GPL v2
 
-# Functions:
-# compile_uboot
-# compile_kernel
+compile_bootloader()
+{
+	compile_bootloader_$BOOTLOADER
+}
 
-compile_uboot()
+compile_bootloader_uboot()
 {
 	build_info "Preparing to compile U-Boot bootloader ..."
 	prepare_uboot
@@ -28,8 +29,39 @@ compile_uboot()
 	cp -rf trust.img $UBOOT_BIN
 	cp -rf rk3399_loader_v1.22.119.bin $UBOOT_BIN
 	cp -rf idbloader.img $UBOOT_BIN
+	
+	cd - > /dev/null
 
 	build_info "Complete U-Boot compile."
+}
+
+compile_bootloader_grub()
+{
+	build_info "Preparing to compile GRUB bootloader ..."
+	prepare_grub
+	
+	cd $GRUB
+	
+	if [ ! -e grub-core/lib/gnulib/stdlib.in.h ] ; then
+		./bootstrap
+	fi
+	if [ ! -e configure ] ; then
+		./autogen.sh
+	fi
+	if [ "${ARCH}" == "amd64" ] ; then
+		#./configure --prefix=/usr/local --with-platform=efi
+		#./configure --prefix=/usr/local --target=x86_64
+		#./configure --prefix=/usr/local --with-platform=efi --target=i686
+		./configure --prefix=/usr/local --target=i686
+	else
+		./configure --prefix=/usr/local --target=i686
+	fi
+	
+	build_info "Build GRUB ..."
+	make clean
+	make -j${CORES}
+	
+	cd - > /dev/null
 }
 
 compile_kernel()
