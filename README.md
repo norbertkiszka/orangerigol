@@ -10,8 +10,10 @@ SoC | Boards |
 |:--|:--|
 | Rockchip RK3399 | Rigol DHO800 series |
 | Rockchip RK3399 | Rigol DHO900 series |
+| PC x86 32 bit | * |
+| PC x86-64 amd64 | * |
 
-More devices are planned - including x86 (typical PC).
+More devices are planned.
 
 Detailed list - for SEO:
 
