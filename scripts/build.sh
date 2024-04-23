@@ -12,16 +12,9 @@ if [ ! -e "${LIB_BASH}" ] ; then
 	git clone https://github.com/norbertkiszka/lib-bash.git $(dirname $LIB_BASH)
 fi
 
+readonly REQUIRED_LIB_BASH_VERSION_AT_LEAST="0.2.3"
 source "${LIB_BASH}"
-
 #info "lib-bash version: ${LIB_BASH_VERSION}"
-
-readonly __REQUIRED_MINIMAL_LIB_BASH_VERSION="0.2.2"
-
-if ! version_is_eqal_or_greater_than "${LIB_BASH_VERSION}" "${__REQUIRED_MINIMAL_LIB_BASH_VERSION}" ; then
-	error "This app requires lib-bash version "${__REQUIRED_MINIMAL_LIB_BASH_VERSION}" or greater but ${LIB_BASH_VERSION} was detected. Please execute git pull inside $(pwd)/scripts/lib-bash/ in order to update lib-bash."
-fi
-
 show_stacktrace_for_warnings
 forbidden_warning
 
@@ -29,7 +22,7 @@ export PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin"
 
 readonly BUILD_VERSION_MAJOR=0
 readonly BUILD_VERSION_MINOR=3
-readonly BUILD_VERSION_PATCH=3
+readonly BUILD_VERSION_PATCH=4
 readonly BUILD_EXTRAVERSION=0
 readonly BUILD_VERSION_TEXT="${BUILD_VERSION_MAJOR}.${BUILD_VERSION_MINOR}.${BUILD_VERSION_PATCH}.${BUILD_EXTRAVERSION}"
 BUILD_GIT_SHORT=$(git_last_commit_hash_short)

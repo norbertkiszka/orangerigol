@@ -134,7 +134,7 @@ select_board()
 			;;
 		"PC i686")
 			BOARD="PC-x86"
-			ARCH="i686"
+			ARCH="i386"
 			OUTPUT_DEVICE_NAME="disk"
 			;;
 	esac
@@ -270,16 +270,11 @@ main_menu()
 			build_success "Succeed to update U-Boot bootloader in ${SDCARD_PATH}."
 			;;
 		"9")
-			build_info "Updating lib-bash"
-			cd $(dirname $LIB_BASH)
-			git pull
-			cd - > /dev/null
-			build_info "Updating build script"
-			git pull
-			if [ "$(echo $BUILD_GIT_SHORT | grep `git log --pretty=format:'%h' -n 1 2> /dev/null`)" ] ; then
+			pull
+			if [ "$(echo $BUILD_GIT_SHORT | grep -F `git_last_commit_hash_short`)" ] ; then
 				build_success "Current version is already latest"
 			else
-				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: $(git log --pretty=format:'%h' -n 1 2> /dev/null)."
+				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: $(git_last_commit_hash_short)."
 				$0 $*
 				exit $?
 			fi
@@ -335,9 +330,9 @@ chose_username()
 		--inputbox "Please input Your desired (short) username.\n\nIt will be also Your password, which You can change it later.\n\nLeave it empty for no user (root only)." \
 		10 80 "rigol" 3>&1 1>&2 2>&3)
 	if [ "${CHOSEN_USERNAME}" == "" ] ; then
-		build_info "Chosen username is null. No user will be added."
+		build_info "Chosen username is: null. No user will be added."
 	else
-		build_info "Chosen username is ${CHOSEN_USERNAME}."
+		build_info "Chosen username is: ${CHOSEN_USERNAME}"
 	fi
 }
 
