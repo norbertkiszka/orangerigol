@@ -26,16 +26,6 @@ build_image()
 
 build_image_with_grub()
 {
-	compile_bootloader
-#	if [ "$ARCH" == "i686" ] ; then
-#		build_image_grub
-#	else
-		build_image_grub_efi
-#	fi
-}
-
-build_image_grub_efi()
-{
 	local TEMP
 	local IMG_ROOTFS_SIZE=$(expr `du -s $DEST | awk 'END {print $1}'` + 1500 \* 1024)
 	local GPTIMG_MIN_SIZE=$(expr $IMG_ROOTFS_SIZE \* 1024 + 101 \* 1024)
@@ -44,6 +34,7 @@ build_image_grub_efi()
 	local sectors
 	local fs_size_sectors
 	local fs_size_bytes
+	local grub_target
 	
 	TMPIMAGE="${IMAGE}_temp"
 	
@@ -90,20 +81,29 @@ build_image_grub_efi()
 	
 	sys_mount_tmp ${LOOPDEV}p3 "${TEMP}"
 	
-	if [ ! -e "${TEMP}/usr/sbin/grub-install" ] && [ ! -e "${TEMP}/usr/local/sbin/grub-install" ] ; then
-		build_info "Installing compiled GRUB executables"
-		cd "${GRUB}"
-		make DESTDIR="${TEMP}/" install
-		cd - > /dev/null
-	fi
+	mkdir -p "${TEMP}/usr/local/grub-bios/bin"
+	mkdir -p "${TEMP}/usr/local/grub-bios/sbin"
+	mkdir -p "${TEMP}/usr/local/grub-bios/share/locale"
+	
+	compile_bootloader_grub bios /usr/local/grub-bios
+	
+	build_info "Installing compiled GRUB (bios) executables"
+	cd "${GRUB}"
+	make DESTDIR="${TEMP}/" install
+	cd - > /dev/null
 	
 	if [ "${KERNEL_METHOD}" == "distro" ] ; then
 		build_info "Installing Linux kernel inside mounted image"
 		cat > "${TEMP}/install_kernel" <<EOF
 #!/bin/bash
+set -e
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get -y install linux-image-amd64
+if [ "${ARCH}" == "amd64" ] ; then
+	apt-get -y install linux-image-amd64
+else
+	apt-get -y install linux-image-686
+fi
 EOF
 		chmod +x "${TEMP}/install_kernel"
 		build_chroot "${TEMP}" /install_kernel
@@ -122,30 +122,67 @@ export LANG=C
 export LANGUAGE=C
 export LC_CTYPE=C 2> /dev/null
 export LC_ALL=C 2> /dev/null
+
 mkdir -p /boot/grub
 ln -s /boot/grub /boot/grub2
-grub-mkconfig -o /boot/grub/grub.cfg
-grub-install --modules="ext2 part_gpt video_fb all_video boot part_gpt ntfs exfat fat" "${LOOPDEV}"
-# efi
-mkdir -p /boot/efi/EFI/BOOT
-# grub-mkimage \
-#   -d /usr/local/lib/grub/i386-pc \
-#   -o /boot/efi/EFI/BOOT/bootx64.efi \
-#   -p /efi/boot \
-#   -O i386-pc \
-#     fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efifwsetup efi_gop \
-#     efi_uga ls search search_label search_fs_uuid search_fs_file gfxterm gfxterm_background \
-#     gfxterm_menu test all_video loadenv exfat ext2 ntfs btrfs hfsplus udf
+/usr/local/grub-bios/sbin/grub-mkconfig -o /boot/grub/grub.cfg
+/usr/local/grub-bios/sbin/grub-install --modules="ext2 part_gpt video_fb all_video boot part_gpt ntfs exfat fat" "${LOOPDEV}"
 EOF
-		chmod +x "${TEMP}/install_grub"
-		build_chroot "${TEMP}" /install_grub
-		mkdir -p "${TEMP}/boot/grub/fonts"
-		cp "${EXTER}/grub_fonts/unicode.pf2" "${TEMP}/boot/grub/fonts/"
-		rm -f "${TEMP}/install_grub"
+	chmod +x "${TEMP}/install_grub"
+	build_chroot "${TEMP}" /install_grub
+	mkdir -p "${TEMP}/boot/grub/fonts"
+	cp "${EXTER}/grub_fonts/unicode.pf2" "${TEMP}/boot/grub/fonts/"
+	rm -f "${TEMP}/install_grub"
 	
-	#build_chroot "${TEMP}/" grub-install --target=x86_64-efi --modules=\"ext2 part_gpt video_fb\" "${LOOPDEV}"
-	#build_chroot "${TEMP}/" update-grub
-	#grub2-mkconfig -o /boot/grub2/grub.cfg
+	mkdir -p "${TEMP}/usr/local/grub-efi/bin"
+	mkdir -p "${TEMP}/usr/local/grub-efi/sbin"
+	mkdir -p "${TEMP}/usr/local/grub-efi/share/locale"
+	
+	compile_bootloader_grub efi /usr/local/grub-efi
+	
+	cd "${GRUB}"
+	make DESTDIR="${TEMP}/" install
+	cd - > /dev/null
+	
+	grub_target="i386-efi"
+	[ "${ARCH}" == "amd64" ] && grub_target="x86_64-efi"
+	
+	mkdir -p "${TEMP}/boot/efi/EFI/BOOT"
+	mkdir -p "${TEMP}/usr/local/grub-efi/etc/default"
+	
+	cat >> "${TEMP}/usr/local/grub-efi/etc/default/grub" <<EOF
+GRUB_FONT="/boot/grub/fonts/unicode.pf2"
+EOF
+	
+	cat > "${TEMP}/boot/efi/EFI/BOOT/grub.cfg" <<EOF
+search --label rootfs --set prefix
+configfile (\$prefix)/boot/grub/grub-efi.cfg
+EOF
+	
+	cat > "${TEMP}/install_grub_efi" <<EOF
+#!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
+export LANG=C
+export LANGUAGE=C
+export LC_CTYPE=C 2> /dev/null
+export LC_ALL=C 2> /dev/null
+
+/usr/local/grub-efi/sbin/grub-mkconfig -o /boot/grub/grub-efi.cfg
+/usr/local/grub-efi/bin/grub-mkimage \
+  -d /usr/local/grub-efi/lib/grub/${grub_target} \
+  -o /boot/efi/EFI/BOOT/bootx64.efi \
+  -p /EFI/BOOT \
+  -O ${grub_target} \
+    fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efifwsetup efi_gop \
+    efi_uga ls search search_label search_fs_uuid search_fs_file gfxterm gfxterm_background \
+    gfxterm_menu test all_video loadenv exfat ext2 ntfs btrfs hfsplus udf echo
+EOF
+	chmod +x "${TEMP}/install_grub_efi"
+	build_chroot "${TEMP}" /install_grub_efi
+	mkdir -p "${TEMP}/boot/grub/fonts"
+	cp "${EXTER}/grub_fonts/unicode.pf2" "${TEMP}/boot/grub/fonts/"
+	rm -f "${TEMP}/install_grub_efi"
+	
 	sync
 	sys_umount "${TEMP}/boot/efi"
 	sys_umount "${TEMP}"

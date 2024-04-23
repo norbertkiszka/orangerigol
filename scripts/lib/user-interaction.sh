@@ -255,7 +255,7 @@ main_menu()
 		"6")
 			sdcard_check || return
 			check_before_flash || return
-			confirm_flash
+			confirm_flash || return
 			kernel_update
 			build_success "Succeed to update kernel in:\n${SDCARD_PATH}."
 			;;
@@ -267,7 +267,7 @@ main_menu()
 		"8")
 			sdcard_check || return
 			check_before_flash || return
-			confirm_flash
+			confirm_flash || return
 			uboot_update
 			build_success "Succeed to update U-Boot bootloader in ${SDCARD_PATH}."
 			;;

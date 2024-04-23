@@ -35,9 +35,18 @@ compile_bootloader_uboot()
 	build_info "Complete U-Boot compile."
 }
 
+# Usage: compile_bootloader_grub efi prefix_path
+# Usage: compile_bootloader_grub bios prefix_path
 compile_bootloader_grub()
 {
 	build_info "Preparing to compile GRUB bootloader ..."
+	
+	if [ "$1" != "efi" ] && [ "$1" != "bios" ] || [ "$2" == "" ] ; then
+		build_error "${FUNCNAME}: bad usage. Called with args: $@"
+	fi
+	
+	build_info "GRUB platform: ${1} Path prefix: ${2}"
+	
 	prepare_grub
 	
 	cd $GRUB
@@ -49,12 +58,17 @@ compile_bootloader_grub()
 		./autogen.sh
 	fi
 	if [ "${ARCH}" == "amd64" ] ; then
-		#./configure --prefix=/usr/local --with-platform=efi
-		#./configure --prefix=/usr/local --target=x86_64
-		#./configure --prefix=/usr/local --with-platform=efi --target=i686
-		./configure --prefix=/usr/local --target=i686
+		if [ "$1" == "efi" ] ; then
+			./configure --prefix="${2}" --target=x86_64 --with-platform=efi
+		else
+			./configure --prefix="${2}" --target=x86_64
+		fi
 	else
-		./configure --prefix=/usr/local --target=i686
+		if [ "$1" == "efi" ] ; then
+			./configure --prefix="${2}" --target=i686 --with-platform=efi
+		else
+			./configure --prefix="${2}" --target=i686
+		fi
 	fi
 	
 	build_info "Build GRUB ..."

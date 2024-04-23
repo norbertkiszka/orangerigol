@@ -7,29 +7,34 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 source "orangerigol-install-helper.sh"
 
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add base-files base-passwd debian-keyring
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add whiptail apt-utils gawk adduser tar
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add dialog coreutils linuxinfo bash bash-completion
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add base-files locales gpg gpgv apt-utils mount xdg-user-dirs
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add dosfstools curl xz-utils iw rfkill ifupdown-ng wget logrotate
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add wpasupplicant openssh-server alsa-utils moc etherwake iputils-ping
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add rsync nano pv pipemeter sysstat iproute2 iptables
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add gpm vim parted git subversion autoconf gcc libtool traceroute
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add libsysfs-dev pkg-config libdrm-dev firmware-linux-free
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add man extundelete lzma openfpgaloader
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add imagemagick cmake bluez flashrom firmware-linux-nonfree
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add wireless-tools usbutils pciutils lsof mtd-utils htop ntfs-3g firmware-realtek
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add zip unzip wget xz-utils testdisk firmware-misc-nonfree
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add lm-sensors rkdeveloptool flashrom fdisk gpart abootimg firmware-zd1211 fancontrol read-edid i2c-tools
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add flex bison binutils libsvn1 gdb cgdb gdbserver aptitude
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add unrar arj genisoimage lynx odt2txt mc moc moc-ffmpeg-plugin
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add extrepo extrepo-offline-data eventstat hexcompare hexcurse
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add expect bc sed make cpufrequtils figlet toilet lsb-release
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add cowsay cowsay-off kmod dnsutils valgrind bind9-host
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add openfpgaloader ethtool tcpdump strace libelf-dev libdw1 libdw-dev
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add libdwarf++0 libdwarf-dev openssl ca-certificates libssl-dev
-# pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add pulseaudio libunwind-16 libunwind-16-dev
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add sudo net-tools g++ libjpeg-dev unrar sshfs avrdude dfu-programmer emu8051
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add esptool gputils simavr avrp net-tools ntp ntpdate efibootmgr
+pkg_option_yes=1
+pkg_option_norecommends=0 ; packages_add base-files base-passwd debian-keyring
+pkg_option_norecommends=0 ; packages_add whiptail apt-utils gawk adduser tar
+pkg_option_norecommends=0 ; packages_add dialog coreutils linuxinfo bash bash-completion
+pkg_option_norecommends=0 ; packages_add base-files locales gpg gpgv apt-utils mount xdg-user-dirs
+pkg_option_norecommends=0 ; packages_add dosfstools curl xz-utils iw rfkill ifupdown-ng wget logrotate
+pkg_option_norecommends=0 ; packages_add wpasupplicant openssh-server alsa-utils moc etherwake iputils-ping
+pkg_option_norecommends=0 ; packages_add rsync nano pv pipemeter sysstat iproute2 iptables
+pkg_option_norecommends=0 ; packages_add gpm vim parted git subversion autoconf gcc libtool traceroute
+pkg_option_norecommends=0 ; packages_add libsysfs-dev pkg-config libdrm-dev firmware-linux-free
+pkg_option_norecommends=0 ; packages_add man extundelete lzma openfpgaloader
+pkg_option_norecommends=0 ; packages_add imagemagick cmake bluez flashrom firmware-linux-nonfree
+pkg_option_norecommends=0 ; packages_add wireless-tools usbutils pciutils lsof mtd-utils htop ntfs-3g firmware-realtek
+pkg_option_norecommends=0 ; packages_add zip unzip wget xz-utils testdisk firmware-misc-nonfree
+pkg_option_norecommends=0 ; packages_add lm-sensors rkdeveloptool flashrom fdisk gpart abootimg firmware-zd1211 fancontrol read-edid i2c-tools
+pkg_option_norecommends=0 ; packages_add flex bison binutils libsvn1 gdb cgdb gdbserver aptitude
+pkg_option_norecommends=0 ; packages_add unrar arj genisoimage lynx odt2txt mc moc moc-ffmpeg-plugin
+pkg_option_norecommends=0 ; packages_add extrepo extrepo-offline-data eventstat hexcompare hexcurse
+pkg_option_norecommends=0 ; packages_add expect bc sed make cpufrequtils figlet toilet lsb-release
+pkg_option_norecommends=0 ; packages_add cowsay cowsay-off kmod dnsutils valgrind bind9-host
+pkg_option_norecommends=0 ; packages_add openfpgaloader ethtool tcpdump strace libelf-dev libdw1 libdw-dev
+pkg_option_norecommends=0 ; packages_add libdwarf++0 libdwarf-dev openssl ca-certificates libssl-dev
+# pkg_option_norecommends=0 ; packages_add pulseaudio libunwind-16 libunwind-16-dev
+pkg_option_norecommends=0 ; packages_add sudo net-tools g++ libjpeg-dev unrar sshfs avrdude dfu-programmer emu8051
+pkg_option_norecommends=0 ; packages_add esptool gputils simavr avrp net-tools ntp ntpdate efibootmgr
+
+if [ "${ARCH}" == "amd64" ] || [ "${ARCH}" == "i386" ] ; then
+	pkg_option_norecommends=0 ; packages_add memtest86 memtest86+
+fi
 
 packages_install_all
