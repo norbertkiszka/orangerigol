@@ -65,9 +65,9 @@ compile_bootloader_grub()
 		fi
 	else
 		if [ "$1" == "efi" ] ; then
-			./configure --prefix="${2}" --target=i686 --with-platform=efi
+			./configure CC=i686-linux-gnu-gcc --prefix="${2}" --target=i686 --with-platform=efi
 		else
-			./configure --prefix="${2}" --target=i686
+			./configure CC=i686-linux-gnu-gcc --prefix="${2}" --target=i686
 		fi
 	fi
 	

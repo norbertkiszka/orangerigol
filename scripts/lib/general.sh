@@ -10,9 +10,9 @@ build_cleanup()
 		losetup -d "${LOOPDEV}" || true
 	fi
 	
-# 	if [ "${TMPIMAGE}" != "" ] && [ -e "${TMPIMAGE}" ] ; then
-# 		rm -f "${TMPIMAGE}" || true
-# 	fi
+	if [ "${TMPIMAGE}" != "" ] && [ -e "${TMPIMAGE}" ] ; then
+		rm -f "${TMPIMAGE}" || true
+	fi
 }
 trap_exit_at_first build_cleanup
 
