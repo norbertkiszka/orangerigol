@@ -1,8 +1,8 @@
 ## What is this?
 
-This is a build script to create Debian/Linux 12 (currently newest stable) based system to work on a Rigol oscilloscopes based on a RK3399 CPU (arm64).
+This is a build script to create Debian/Linux 12 (currently newest stable) based system to work on a Rigol oscilloscopes based on a RK3399 CPU (arm64) and x86 based machines.
 
-Uses user friendly menus and messages based on a whiptail.
+Uses user friendly menus - no need to be sys expert.
 
 ## Currently supported boards (devices)
 
@@ -29,12 +29,25 @@ Detailed oscilloscopes list for SEO:
 
 As for now, it works only with Debian based systems. Debian 12 is highly recommended, since 11 was tested very long time ago.
 
-After downloading or cloning (recommended instead of downloading) execute one of listed below scripts:
+Clone repository:
+
+```bash
+git clone --recurse-submodules https://github.com/norbertkiszka/rigol-orangerigol-build.git
+cd rigol-orangerigol-build
+```
+
+After that, execute one of those scripts:
 
 - build-for-begginners.sh
 - build-for-experts.sh
 
 Names of those are of course self explanatory.
+
+Example:
+
+```bash
+sudo ./build-for-begginners.sh
+```
 
 At the beginning of first run, it will prepare Your system with installing necessary packages. However its easy to forget about adding something to that list, so if You encounter any problems with missing something - please let me know. If newer commit will be detected (after update), it will run preparation again to make sure that we have all necessary packages.
 
@@ -42,22 +55,22 @@ After eventual preparation, You will see target device choice. Currently it will
 
 Next menu is a "main menu". To start build process, enter first option (press enter). It will grab all necessary information from You and at the end fully working image should be generated.
 
-Build process will take couple hours, especially if its first time.
+Build process will take some time, especially if its first time.
 
-After that, You can run this script again, and You should see one more option (last one) to flash image into SD card. After flashing, it will resize filesystem in order to use full card capacity.
+After that, it will go back to main menu and You should see one more option (last one) to flash image into disk or SD card. After flashing, it will resize filesystem in order to use full disk capacity.
 
-If current SD card is mounted in Your host, it will ask for Your permission to umount it. If You dont use its contents, its safe to press enter here.
+If given disk or card is mounted in Your host, it will ask for Your permission to umount it. If You dont use its contents, its safe to press enter here.
 
-Naturally, If You have some important data on SD card before flashing, make a backup, because flashing will overwrite it.
+Naturally, If You have some important data on target disk before flashing, make a backup, because flashing will overwrite it.
 
-Finally You can remove card from a card reader and put it into device. Now You can use at it is or do You own changes if You like.
+Finally You can remove card from a card reader (or unplug disk) and put it into target device. Now You can use at it is or do You own changes if You like.
 
 ## Features
 
 - Choice of installing base system (server) or a user friendly desktop (graphical interface) with a bunch of a desktop software (browser, video player, document viewers, etc).
 - When interrupted by user or due to error, it will ask to continue or to delete rootfs and start from the beginning.
 - Preinstalled desktop setup with Mate enviroment (supported and popular fork of a Gnome 2) - ready to use from first start.
-- Possibility to flash SD card directly from a menu in this script. After flashing, it will resize fs to fullfil whole SD card.
+- Possibility to flash SD card, disk or USB pendrive directly from a menu in this script. After flashing, it will resize fs to fullfil whole SD card.
 
 ## Videos and screenshots
 
