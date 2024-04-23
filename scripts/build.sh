@@ -5,7 +5,14 @@
 
 set -ea
 
-source "$(pwd)/scripts/lib-bash/lib-bash.sh"
+LIB_BASH="$(pwd)/scripts/lib-bash/lib-bash.sh"
+
+if [ ! -e "${LIB_BASH}" ] ; then
+	echo "Cloning missing lib-bash"
+	git clone https://github.com/norbertkiszka/lib-bash.git $(dirname $LIB_BASH)
+fi
+
+source "${LIB_BASH}"
 
 #info "lib-bash version: ${LIB_BASH_VERSION}"
 
@@ -22,7 +29,7 @@ export PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin"
 
 readonly BUILD_VERSION_MAJOR=0
 readonly BUILD_VERSION_MINOR=3
-readonly BUILD_VERSION_PATCH=1
+readonly BUILD_VERSION_PATCH=2
 readonly BUILD_EXTRAVERSION=0
 readonly BUILD_VERSION_TEXT="${BUILD_VERSION_MAJOR}.${BUILD_VERSION_MINOR}.${BUILD_VERSION_PATCH}.${BUILD_EXTRAVERSION}"
 BUILD_GIT_SHORT=$(git_last_commit_hash_short)
@@ -47,6 +54,8 @@ source "${SCRIPTS}"/lib/flash_image.sh
 
 if [ "${EUID}" != 0 ]; then
 	build_warning "This script requires root privileges, trying to use sudo..."
+	set +e
+	set +a
 	sudo $0 $*
 	exit $?
 fi

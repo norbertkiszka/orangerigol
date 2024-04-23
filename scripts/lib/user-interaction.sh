@@ -175,7 +175,7 @@ main_menu()
 		fi
 	fi
 	
-	[ "${BUILD_GIT_SHORT}" == "" ] || whiptail_menu_option_add "9" "Update this build app (via git pull)"
+	[ "${BUILD_GIT_SHORT}" == "" ] || whiptail_menu_option_add "9" "Update this app (via git pull)"
 
 	if [ "$DIFFICULTY" == "expert" ] && [ -e $DEST/etc/orangerigol/buildstage ] && [ "$(cat $DEST/etc/orangerigol/buildstage | grep "user_setup")" != "" ] ; then
 		whiptail_menu_option_add "10" "Add additional user into existing rootfs"
@@ -272,13 +272,18 @@ main_menu()
 			build_success "Succeed to update U-Boot bootloader in ${SDCARD_PATH}."
 			;;
 		"9")
-			info "Executing git pull"
+			build_info "Updating lb-bash"
+			cd $($(basename $(dirname $LIB_BASH)))
+			git pull
+			cd - > /dev/null
+			build_info "Updating build script"
 			git pull
 			if [ "$(echo $BUILD_GIT_SHORT | grep `git log --pretty=format:'%h' -n 1 2> /dev/null`)" ] ; then
 				build_success "Current version is already latest"
 			else
-				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: ($(git log --pretty=format:'%h' -n 1 2> /dev/null)).\n\nPlease run this script again in order to use new version"
-				exit
+				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: ($(git log --pretty=format:'%h' -n 1 2> /dev/null))."
+				$0 $*
+				exit $?
 			fi
 			;;
 		"10")

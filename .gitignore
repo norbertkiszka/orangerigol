@@ -61,6 +61,8 @@ resume1.code
 kernel*
 uboot*
 grub*
+!external/grub_fonts
+!external/grub_fonts/*
 toolchain
 output
 User variables:

@@ -44,7 +44,7 @@ prepare_host()
 		        gcc gcc-i686-linux-gnu automake make curl binfmt-support flex whiptail \
 		        lib32z1 lib32z1-dev bison gettext pkg-config xz-utils mount gcp \
 		        figlet dosfstools libncurses5-dev debootstrap binutils binutils-i686-linux-gnu \
-		        swig libpython2.7-dev libssl-dev python2-minimal \
+		        swig libpython2.7-dev libssl-dev python2-minimal autopoint gettext \
 		        dos2unix libc6:arm64 libssl-dev build-essential \
 		        libncurses-dev bison libssl-dev libelf-dev \
 		        libssl-dev:arm64 libssl3:arm64 python-dev libxml2-dev \
