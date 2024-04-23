@@ -162,7 +162,7 @@ main_menu()
 	whiptail_menu_option_add "1" "Build Release image (${OUTPUT_DEVICE_NAME} image)"
 	if [ "$DIFFICULTY" == "expert" ] ; then
 		whiptail_menu_option_add "2" "Build Rootfs only"
-		whiptail_menu_option_add "3" "Compile ${BOOTLOADER} bootloader"
+		[ "${BOOTLOADER}" != "grub" ] && whiptail_menu_option_add "3" "Compile ${BOOTLOADER} bootloader"
 		if [ "$KERNEL_METHOD" == "compile" ] ; then
 			whiptail_menu_option_add "4" "Compile Linux kernel with modules"
 			whiptail_menu_option_add "5" "Compile Linux kernel modules only"
@@ -232,10 +232,8 @@ main_menu()
 			;;
 		"2")
 			chose_username
-			compile_bootloader
-			if [ "$KERNEL_METHOD" == "compile" ] ; then
-				compile_kernel
-			fi
+			[ "${BOOTLOADER}" != "grub" ] && compile_bootloader
+			[ "$KERNEL_METHOD" == "compile" ] && compile_kernel
 			build_rootfs
 			build_success "Succeed to build rootfs."
 			;;
@@ -272,8 +270,8 @@ main_menu()
 			build_success "Succeed to update U-Boot bootloader in ${SDCARD_PATH}."
 			;;
 		"9")
-			build_info "Updating lb-bash"
-			cd $($(basename $(dirname $LIB_BASH)))
+			build_info "Updating lib-bash"
+			cd $(dirname $LIB_BASH)
 			git pull
 			cd - > /dev/null
 			build_info "Updating build script"
@@ -281,7 +279,7 @@ main_menu()
 			if [ "$(echo $BUILD_GIT_SHORT | grep `git log --pretty=format:'%h' -n 1 2> /dev/null`)" ] ; then
 				build_success "Current version is already latest"
 			else
-				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: ($(git log --pretty=format:'%h' -n 1 2> /dev/null))."
+				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: $(git log --pretty=format:'%h' -n 1 2> /dev/null)."
 				$0 $*
 				exit $?
 			fi
