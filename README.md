@@ -10,8 +10,8 @@ SoC | Boards |
 |:--|:--|
 | Rockchip RK3399 | Rigol DHO800 series |
 | Rockchip RK3399 | Rigol DHO900 series |
-| PC x86 32 bit | * |
-| PC x86-64 amd64 | * |
+| x86 i686 | EFI, BIOS |
+| AMD64 | EFI, BIOS |
 
 More devices are planned.
 
