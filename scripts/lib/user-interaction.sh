@@ -275,6 +275,9 @@ main_menu()
 				build_success "Current version is already latest"
 			else
 				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: $(git_last_commit_hash_short)."
+				set +e
+				set +a
+				export -n LIB_BASH_VERSION
 				$0 $*
 				exit $?
 			fi
