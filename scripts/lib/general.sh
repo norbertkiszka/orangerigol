@@ -31,9 +31,9 @@ prepare_host()
 	fi
 	
 	build_info "Adding architectures into Your packaging system"
-	dpkg --add-architecture arm64 || build_error "Failed to add foreign architecture arm64 into Your system. Check error(s) message(s) and try again."
-	dpkg --add-architecture amd64 || build_error "Failed to add foreign architecture amd64 into Your system. Check error(s) message(s) and try again."
-	dpkg --add-architecture i386 || build_error "Failed to add foreign architecture i386 into Your system. Check error(s) message(s) and try again."
+	sys_add_arch arm64
+	sys_add_arch amd64
+	sys_add_arch i386
 	
 	build_info "Retrieving/updating packages information"
 	apt-get -y update
@@ -42,7 +42,7 @@ prepare_host()
 	apt-get -y --no-install-recommends --fix-missing install \
 		        bash-completion tar mtools u-boot-tools pv bc git sed gawk coreutils \
 		        gcc gcc-i686-linux-gnu automake make curl binfmt-support flex whiptail \
-		        lib32z1 lib32z1-dev bison gettext pkg-config xz-utils mount gcp \
+		        lib32z1 lib32z1-dev bison gettext pkg-config xz-utils mount \
 		        figlet dosfstools libncurses5-dev debootstrap binutils binutils-i686-linux-gnu \
 		        swig libpython2.7-dev libssl-dev python2-minimal autopoint gettext \
 		        dos2unix libc6:arm64 libssl-dev build-essential gcc-multilib-i686-linux-gnu \
@@ -143,28 +143,29 @@ prepare_grub()
 
 kernel_update()
 {
-	build_info "Updating Linux kernel image in $SDCARD_PATH ..."
-	pv $BUILD/kernel/boot.img  | dd of=$SDCARD_PATH seek=49152 conv=notrunc
+	build_info "Updating Linux kernel image in $INPUT_PATH ..."
+	pv $BUILD/kernel/boot.img  | dd of=$INPUT_PATH seek=49152 conv=notrunc
 	sync
 }
 
 modules_update()
 {
-	build_info "Updating Linux kernel modules in $SDCARD_PATH ..."
+	build_info "Updating Linux kernel modules in ${ROOTFS_PATH} ..."
 	
 	# Remove old modules
-	rm -rf $ROOTFS_PATH/lib/modules
+	rm -rf "${ROOTFS_PATH}/lib/modules"
 	
-	cp -rfa $BUILD/lib/modules $ROOTFS_PATH/lib/
+	#cp -rfa "${BUILD}/lib/modules" "${ROOTFS_PATH}/lib/"
+	sys_cpdir "${BUILD}/lib/modules/" "${ROOTFS_PATH}/lib/"
 	sync
 }
 
 uboot_update()
 {
-	build_info "Updating U-Boot bootloader in $SDCARD_PATH ..."
-	dd if=$BUILD/uboot/idbloader.img of=$SDCARD_PATH seek=64
-	dd if=$BUILD/uboot/uboot.img of=$SDCARD_PATH seek=24576
-	dd if=$BUILD/uboot/trust.img of=$SDCARD_PATH seek=32768
+	build_info "Updating U-Boot bootloader in $INPUT_PATH ..."
+	dd if=$BUILD/uboot/idbloader.img of=$INPUT_PATH seek=64
+	dd if=$BUILD/uboot/uboot.img of=$INPUT_PATH seek=24576
+	dd if=$BUILD/uboot/trust.img of=$INPUT_PATH seek=32768
 	sync
 }
 

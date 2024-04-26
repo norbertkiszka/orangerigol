@@ -12,7 +12,7 @@ if [ ! -e "${LIB_BASH}" ] ; then
 	git clone https://github.com/norbertkiszka/lib-bash.git $(dirname $LIB_BASH)
 fi
 
-readonly REQUIRED_LIB_BASH_VERSION_AT_LEAST="0.2.3"
+readonly REQUIRED_LIB_BASH_VERSION_AT_LEAST="0.2.7"
 source "${LIB_BASH}"
 #info "lib-bash version: ${LIB_BASH_VERSION}"
 show_stacktrace_for_warnings
@@ -22,7 +22,7 @@ export PATH="${PATH}:/bin:/usr/bin:/sbin:/usr/sbin"
 
 readonly BUILD_VERSION_MAJOR=0
 readonly BUILD_VERSION_MINOR=3
-readonly BUILD_VERSION_PATCH=7
+readonly BUILD_VERSION_PATCH=8
 readonly BUILD_EXTRAVERSION=0
 readonly BUILD_VERSION_TEXT="${BUILD_VERSION_MAJOR}.${BUILD_VERSION_MINOR}.${BUILD_VERSION_PATCH}.${BUILD_EXTRAVERSION}"
 BUILD_GIT_SHORT=$(git_last_commit_hash_short)

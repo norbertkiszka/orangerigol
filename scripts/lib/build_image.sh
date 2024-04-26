@@ -60,7 +60,8 @@ build_image_with_grub()
 	mkfs.ext4 -F -L "rootfs" -b 1024 -U "${ROOT_UUID}" "${TMPIMAGE}" "${fs_size_sectors}" -E offset=${offset}
 	sync
 	TEMP=$(sys_mktempdir)
-	[ "${TEMP}" != "" ] || error oops # never be too shure
+	[ "${TEMP}" != "" ] || error oops # never be too sure
+	modprobe loop 2> /dev/null || true
 	sys_mount_tmp "${TMPIMAGE}" "${TEMP}" -o loop,offset=${offset},sizelimit=${fs_size_bytes}
 	build_info "Copying rootfs files into created file system ..."
 	build_info "Rootfs calculated dir size: $(du -hs "${DEST}" | awk '{print $1}')"
@@ -70,7 +71,6 @@ build_image_with_grub()
 	sync
 	sys_umount "${TEMP}"
 	
-	modprobe loop || true
 	LOOPDEV=$(losetup --find --show "${TMPIMAGE}")
 	build_info "Using loop device ${LOOPDEV}"
 	partprobe ${LOOPDEV}

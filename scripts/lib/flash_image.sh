@@ -45,50 +45,53 @@ select_image()
 
 flash_image()
 {
+	build_info "Flashing ${INPUT_PATH} using ${SELECTED_IMAGE} ..."
+	
 	local partition
-	build_info "Flashing ${SDCARD_PATH} using ${SELECTED_IMAGE} ..."
-	IMAGE_SIZE=$(wc -c < "${BUILD}/images/${SELECTED_IMAGE}")
+	local is_dev_null
+	local IMAGE_SIZE=$(wc -c < "${BUILD}/images/${SELECTED_IMAGE}")
 	if [ "$IMAGE_SIZE" -lt 376832 ] ; then
-		build_error "${BUILD}/images/${SELECTED_IMAGE} doestn look like a proper image..."
+		build_error "${BUILD}/images/${SELECTED_IMAGE} does not look like a proper image..."
+	fi
+	local is_dev_null=""
+	if [ "$(stat -Lc %t:%T ${INPUT_PATH})" == "1:3" ] ; then
+		is_dev_null="y"
+		build_notice "Null device as a target device"
 	fi
 	# not a dev null && big enough
-	local is_dev_null=""
-	if [ "$(stat -Lc %t:%T ${SDCARD_PATH})" == "1:3" ] ; then
-		is_dev_null="y"
-		notice "Null device as a sd card"
+	if [ "$is_dev_null" == "" ] && [ "$IMAGE_SIZE" -gt "$(blockdev --getsize64 "${INPUT_PATH}")" ] ; then
+		build_error "${SELECTED_IMAGE} is bigger than target ${OUTPUT_DEVICE_NAME_FOR_HUMAN} size..."
 	fi
-	if [ "$is_dev_null" == "" ] && [ "$IMAGE_SIZE" -gt "$(blockdev --getsize64 "${SDCARD_PATH}")" ] ; then
-		build_error "${SELECTED_IMAGE} is bigger than SD card size..."
-	fi
-	pv "${BUILD}/images/${SELECTED_IMAGE}" | dd of="${SDCARD_PATH}"
-	build_info "SD card is flashed"
+	pv "${BUILD}/images/${SELECTED_IMAGE}" | dd of="${INPUT_PATH}"
+	sync
+	build_info "${OUTPUT_DEVICE_NAME_FOR_HUMAN} is flashed"
 	if [ "$is_dev_null" != "" ] ; then
 		notice "Ommiting resizing since its a /dev/null"
 		return
 	fi
 	# TODO: compare flashed contents with image file with user choice
-	build_info "Forcing host kernel to probe partition table in ${SDCARD_PATH}"
-	partprobe "$SDCARD_PATH" 2> /dev/null
+	build_info "Forcing host kernel to probe partition table in ${INPUT_PATH}"
+	partprobe "$INPUT_PATH" 2> /dev/null
 	sleep 3 # partprobe takes some time. 3 seconds should be more than enough for most systems
-	partition="/dev/$(sys_get_last_partition_name "${SDCARD_PATH}")"
+	partition="$(sys_get_udev_path)/$(sys_get_last_partition_name "${INPUT_PATH}")"
 	build_info "Checking filesystem in ${partition}"
 	fsck.ext4 -fy "${partition}"
-	build_info "Resizing ${SDCARD_PATH} partition table to fulfill whole SD card"
-	sgdisk "${SDCARD_PATH}" -e
-	build_info "Forcing host kernel to probe partition table in ${SDCARD_PATH} again"
-	partprobe "$SDCARD_PATH" 2> /dev/null
+	build_info "Resizing ${INPUT_PATH} partition table to fulfill whole ${OUTPUT_DEVICE_NAME_FOR_HUMAN}"
+	sgdisk "${INPUT_PATH}" -e
+	build_info "Forcing host kernel to probe partition table in ${INPUT_PATH} again"
+	partprobe "$INPUT_PATH" 2> /dev/null
 	sleep 3
 	build_info "Resizing ${partition} to fulfill whole empty space"
-	echo "- +" | sfdisk -N $(sys_get_last_partition_num "${SDCARD_PATH}") "${SDCARD_PATH}"
+	echo "- +" | sfdisk -N $(sys_get_last_partition_num "${INPUT_PATH}") "${INPUT_PATH}"
 	sleep 1
-	build_info "Forcing host kernel to probe partition table in ${SDCARD_PATH} again"
-	partprobe "$SDCARD_PATH" 2> /dev/null
+	build_info "Forcing host kernel to probe partition table in ${INPUT_PATH} again"
+	partprobe "$INPUT_PATH" 2> /dev/null
 	sleep 3
 	build_info "Resizing ${partition} filesystem to fulfill whole partition"
 	resize2fs -p "${partition}"
-	partprobe "$SDCARD_PATH" 2> /dev/null # just to be safe
+	partprobe "$INPUT_PATH" 2> /dev/null # just to be safe
 	sleep 3
-	build_info "Checking filesystem in ${partition} again"
+	build_info "Checking filesystem in ${partition} after resizing"
 	fsck.ext4 -fy "${partition}"
-	build_info "SD card is ready to use."
+	build_info "${OUTPUT_DEVICE_NAME_FOR_HUMAN} is ready to use."
 }
