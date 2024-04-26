@@ -156,8 +156,7 @@ main_menu()
 			fi
 		fi
 	fi
-
-
+	
 	if [ "$DIFFICULTY" == "expert" ] && [ -e "$DEST/etc/orangerigol/buildstage" ] && [ "$(cat "$DEST/etc/orangerigol/buildstage" | grep "overlays_preinstall")" != "" ] ; then
 		whiptail_menu_option_add "12" "Manually add overlay"
 	fi
@@ -167,9 +166,14 @@ main_menu()
 	fi
 
 	# NOTE: Flash option should be always as a last one
-	OPTION_ID_FLASH_IMAGE="14"
+	OPTION_ID_FLASH_IMAGE="15"
 	if [ "$DIFFICULTY" == "expert" ] ; then
-		[ "$(ls $BUILD/images/*.img 2> /dev/null)" != "" ] && whiptail_menu_option_add "$OPTION_ID_FLASH_IMAGE" "Flash image on a ${OUTPUT_DEVICE_NAME_FOR_HUMAN}"
+		if [ "$(ls $BUILD/images/*.img 2> /dev/null)" != "" ] ; then
+			if [ "$(uname -m)" == "x86_64" ] && modprobe kvm 2> /dev/null && which kvm > /dev/null && [[ "${ARCH}" == "amd64" || "${ARCH}" == "i386" ]] ; then
+				whiptail_menu_option_add "14" "Run VM on image"
+			fi
+			whiptail_menu_option_add "$OPTION_ID_FLASH_IMAGE" "Flash image on a ${OUTPUT_DEVICE_NAME_FOR_HUMAN}"
+		fi
 	else
 		[ "$(ls $BUILD/images/*.img 2> /dev/null | grep "_${BOARD}_")" != "" ] && whiptail_menu_option_add "$OPTION_ID_FLASH_IMAGE" "Flash (write) image on a ${OUTPUT_DEVICE_NAME_FOR_HUMAN}"
 	fi
@@ -269,7 +273,13 @@ main_menu()
 			build_info "Back in build script..."
 			;;
 		"14")
-			select_image
+			select_image "Please select image to run virtual machine."
+			kvm -drive format=raw,file="${BUILD}/images/${SELECTED_IMAGE}" -serial stdio -m 4G -cpu host -smp 2
+			;;
+		"15")
+			local menustr="Please select image to flash into SD card."
+			[ "$DIFFICULTY" == "expert" ] || menustr+="\n\nIf not sure, select first (press enter)." # Since files are sorted by time and we filtered other devices, first option should be most appropriate.
+			select_image "${menustr}"
 			select_disk_device "Select device to flash image" "Input file path to flash image into" "${default_flash_device}"
 			check_before_flash || return
 			confirm_flash || return

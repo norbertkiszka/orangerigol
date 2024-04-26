@@ -3,8 +3,7 @@
 # Author: Norbert Kiszka and others
 # License: GPL v2
 
-# TODO: backup from (main?) menu
-
+# Arg1: menu string
 select_image()
 {
 	if [ "$DIFFICULTY" == "expert" ] ; then
@@ -34,13 +33,11 @@ select_image()
 		whiptail_menu_options_add "$key" "${IMAGES[$key]}"
 	done
 	
-	MENUSTR="Please select image to flash into SD card."
-	[ "$DIFFICULTY" == "expert" ] || MENUSTR+="\n\nIf not sure, select first (press enter)." # Since files are sorted by time and we filtered other devices, first option should be most appropriate.
-	whiptail_menu_execute "Flash menu" "$MENUSTR"
+	whiptail_menu_execute "Image menu" "${1}"
 	
 	SELECTED_IMAGE="${WHIPTAIL_MENU_OPTION_NAME}"
 	
-	build_info "Selected image to flash: $SELECTED_IMAGE"
+	build_info "Selected image: $SELECTED_IMAGE"
 }
 
 flash_image()
