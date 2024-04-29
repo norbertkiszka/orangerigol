@@ -29,9 +29,11 @@ Detailed oscilloscopes list for SEO:
 - Rigol DHO804
 - Rigol DHO802
 
-## How to use it?
+## Requirements
 
-As for now, it requires Debian 12 to run this script. Other distros are planned.
+This build script currenty only works on a Debian 12 "bookworm" as a host system.
+
+## How to use it?
 
 Clone repository:
 
@@ -67,14 +69,14 @@ If given disk or card is mounted in Your host, it will ask for Your permission t
 
 Naturally, If You have some important data on target disk before flashing, make a backup, because flashing will overwrite it.
 
-Finally You can remove card from a card reader (or unplug disk) and put it into target device. Now You can use at it is or do You own changes if You like.
+Finally You can remove card from a card reader (or unplug disk) and put it into target device.
 
 ## Features
 
 - Choice of installing base system (server) or a user friendly desktop (graphical interface) with a bunch of a desktop software (browser, video player, document viewers, etc).
 - When interrupted by user or due to error, it will ask to continue or to delete rootfs and start from the beginning.
 - Preinstalled desktop setup with Mate enviroment (supported and popular fork of a Gnome 2) - ready to use from first start.
-- Possibility to flash SD card, disk or USB pendrive directly from a menu in this script. After flashing, it will resize fs to fullfil whole SD card.
+- Possibility to flash SD card, disk or USB pendrive directly from a menu in this script. After flashing, it will resize fs to fullfil whole disk size.
 
 ## Videos and screenshots
 
@@ -92,22 +94,20 @@ Finally You can remove card from a card reader (or unplug disk) and put it into 
 
 ![SD card flashing confirmation](https://raw.githubusercontent.com/norbertkiszka/rigol-orangerigol-build/master/screenshots/screenshot-5.png)
 
-## Current status
+## Current status on a Rigol oscilloscopes
 
 - Its stable - no crashes, except reboot (see below).
 - Does reboot instead of shutdown and sometimes makes kernel panic when tried to reset board.
 - Oscilloscope app is not fully ported (its not here yet).
-- As for now, it does support only Debian 12 "bookworm" - both in host and as a build system.
 - Currently tested only on a Rigol DHO924S.
 - Boot time ~33 seconds to a GDM3 graphical login manager. After ~6 seconds autologin will be performed.
-- Currently requires Debian based system.
 
 ## How much resources it uses?
 
 After full boot and login into Mate desktop enviroment, by deafult it will use less than 500 MiB RAM.
 CPU usage when not doing anything is almost zero.
 
-Base system takes around 2.2 GiB and with desktop enviroment it will take around 8 GiB.
+Space used: base system takes around 2.2 GiB and with desktop enviroment it will take around 8 GiB.
 
 ## Default password
 
