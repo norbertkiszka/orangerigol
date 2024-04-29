@@ -6,35 +6,43 @@
 set -e
 export DEBIAN_FRONTEND=noninteractive
 source "orangerigol-install-helper.sh"
+pkg_option_yes=1
 
 # X server (basic video software) with drivers
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add xinit xserver-xorg xserver-xorg-input-all xserver-xorg-input-libinput xcvt xserver-xorg-legacy xserver-xorg-video-fbdev
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers libgl1-mesa-dri android-libunwind
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add libvulkan1 libvulkan-dev libdrm2 libdrm-dev libwayland-server0 libwayland-client0 libwayland-dev
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add xserver-xorg-video-cirrus xserver-xorg-video-neomagic xserver-xorg-video-vesa xserver-xorg-video-qxl
+pkg_option_norecommends=1 ; packages_add xinit xserver-xorg xserver-xorg-input-all xserver-xorg-input-libinput xcvt xserver-xorg-legacy
+if grep -i "ubuntu" /etc/os-release > /dev/null ; then
+	pkg_option_norecommends=1 ; packages_add xserver-xorg-video-all
+else
+	pkg_option_norecommends=1 ; packages_add xserver-xorg-video-fbdev xserver-xorg-video-cirrus xserver-xorg-video-neomagic xserver-xorg-video-vesa xserver-xorg-video-qxl
+fi
+pkg_option_norecommends=0 ; packages_add mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers libgl1-mesa-dri android-libunwind
+pkg_option_norecommends=0 ; packages_add libvulkan1 libvulkan-dev libdrm2 libdrm-dev libwayland-server0 libwayland-client0 libwayland-dev
 # GUI enviroment, themes, tools and fonts
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add metacity shiki-wine-theme shiki-human-theme gnome-themes-extra gnome-themes-extra-data xutils xutils-dev
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add mate-desktop mate-desktop-environment mesa-utils
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add desktop-base fontconfig fontconfig-config fonts-dejavu-core fonts-quicksand
+pkg_option_norecommends=1 ; packages_add metacity shiki-wine-theme shiki-human-theme gnome-themes-extra gnome-themes-extra-data xutils xutils-dev
+pkg_option_norecommends=1 ; packages_add mate-desktop mate-desktop-environment mesa-utils
+pkg_option_norecommends=1 ; packages_add desktop-base fontconfig fontconfig-config fonts-dejavu-core fonts-quicksand
 # Basic and important GUI tools
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add atril eom ffmpegthumbnailer mate-calc mate-terminal
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add mate-applets mate-notification-daemon mate-system-monitor mate-utils pluma
-# pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add mate-power-manager
+pkg_option_norecommends=0 ; packages_add atril eom ffmpegthumbnailer mate-calc mate-terminal
+pkg_option_norecommends=0 ; packages_add mate-applets mate-notification-daemon mate-system-monitor mate-utils pluma
+# pkg_option_norecommends=0 ; packages_add mate-power-manager
 # User friendly and powerfull network management
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add network-manager network-manager-gnome
+pkg_option_norecommends=0 ; packages_add network-manager network-manager-gnome
 # Popular, light and very powerfull video player and password manager (keepassx in Debian 12 is a transitional package to install the keepassxc)
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add smplayer smtube keepassx
+pkg_option_norecommends=0 ; packages_add smplayer smtube keepassx
 # Tools and audio/video players
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add fische mesa-utils mesa-utils-bin
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add krusader # Very powerfull file management
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add clementine audacity kwave
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add mhwaveedit totem ark cups
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add caja-mediainfo gparted simplescreenrecorder kompare
+pkg_option_norecommends=0 ; packages_add fische mesa-utils mesa-utils-bin
+pkg_option_norecommends=0 ; packages_add krusader # Very powerfull file management
+pkg_option_norecommends=0 ; packages_add clementine audacity kwave
+pkg_option_norecommends=0 ; packages_add mhwaveedit totem ark cups
+pkg_option_norecommends=0 ; packages_add caja-mediainfo gparted simplescreenrecorder kompare
 # Tools, bowsers and games
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add firefox-esr gpsim gtkwave
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add chromium snake4 kate kpat supertux
-pkg_option_yes=1 ; pkg_option_norecommends=0 ; packages_add supertuxkart nexuiz nexuiz-music
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add hedgewars yt-dlp s51dude evolution
-pkg_option_yes=1 ; pkg_option_norecommends=1 ; packages_add gdm3 synaptic kdeconnect
+pkg_option_norecommends=0 ; packages_add gpsim gtkwave
+pkg_option_norecommends=0 ; packages_add snake4 kate kpat supertux
+pkg_option_norecommends=0 ; packages_add supertuxkart nexuiz nexuiz-music
+pkg_option_norecommends=1 ; packages_add hedgewars yt-dlp s51dude evolution
+pkg_option_norecommends=1 ; packages_add gdm3 synaptic kdeconnect
+pkg_option_ignoremissing=1
+pkg_option_norecommends=0 ; packages_add_if_available firefox-esr firefox chromium chromium-browser
+pkg_option_ignoremissing=0
 
 packages_install_all

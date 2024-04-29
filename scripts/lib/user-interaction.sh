@@ -33,27 +33,56 @@ select_distro()
 {
 	build_info "Asking for a build type ..."
 	
-	[ "$DEVICE_CATEGORY" == "Rigol DHO800/900" ] && whiptail_menu_option_add "" "Desktop with oscilloscope app"
-	whiptail_menu_option_add "" "Desktop"
-	whiptail_menu_option_add "" "Server (no gui, only text console)"
+	[ "$DEVICE_CATEGORY" == "Rigol DHO800/900" ] && whiptail_menu_option_add "" "Debian 12 Desktop with oscilloscope app"
+	whiptail_menu_option_add "" "Debian 12 Desktop"
+	if [ "$ARCH" == "amd64" ] || [ "$ARCH" == "arm64" ] ; then
+		whiptail_menu_option_add "" "Ubuntu 22.04 LTS Desktop"
+	fi
+	whiptail_menu_option_add "" "Debian 12 Server (no gui, only text console)"
+	if [ "$ARCH" == "amd64" ] || [ "$ARCH" == "arm64" ] ; then
+		whiptail_menu_option_add "" "Ubuntu 22.04 LTS Server"
+	fi
 	
 	whiptail_menu_execute "Build type menu" "Please select build option"
 	
+	DISTRO="bookworm"
+	SOURCES="http://ftp.de.debian.org/debian/"
+	METHOD="debootstrap"
+	OS="debian"
+	
+	METHOD="debootstrap"
+	ROOTFS="${DISTRO}-base-${ARCH}.tar.gz"
+	
 	case "${WHIPTAIL_MENU_OPTION_NAME}" in
-		*oscilloscope*)
+		"Ubuntu 22.04 LTS Desktop")
+			IMAGETYPE="desktop"
+			SOURCES="http://archive.ubuntu.com/ubuntu/"
+			DISTRO="jammy"
+			OS="ubuntu"
+			;;
+		"Ubuntu 22.04 LTS Server")
+			IMAGETYPE="server"
+			SOURCES="http://archive.ubuntu.com/ubuntu/"
+			DISTRO="jammy"
+			OS="ubuntu"
+			;;
+		"Debian 12 Desktop with oscilloscope app")
 			IMAGETYPE="desktop-oscilloscope"
 			whiptail --title "Orange Rigol Build System" --msgbox "Oscilloscope app is not ported yet!!! Only desktop will be installed." 10 40 0
 			;;
-		*Desktop*)
+		"Debian 12 Desktop")
 			IMAGETYPE="desktop" ;;
-		*Server*)
+		"Debian 12 Server (no gui, only text console)")
 			IMAGETYPE="server" ;;
 		*)
 			build_error "Oopsie"
 		;;
 	esac
 	
-	DISTRO="bookworm"
+	if [ "${DISTRO}" == "jammy" ] ; then
+		METHOD="download"
+		ROOTFS="http://cdimage.ubuntu.com/ubuntu-base/releases/jammy/release/ubuntu-base-22.04-base-${ARCH}.tar.gz"
+	fi
 }
 
 startup_selections()
@@ -171,6 +200,8 @@ main_menu()
 		if [ "$(ls $BUILD/images/*.img 2> /dev/null)" != "" ] ; then
 			if [ "$(uname -m)" == "x86_64" ] && modprobe kvm 2> /dev/null && which kvm > /dev/null && [[ "${ARCH}" == "amd64" || "${ARCH}" == "i386" ]] ; then
 				whiptail_menu_option_add "14" "Run VM on image"
+			elif [ "$(uname -m)" == "i386" ] && modprobe kvm 2> /dev/null && which kvm > /dev/null && [ "${ARCH}" == "i386" ] ; then
+				whiptail_menu_option_add "14" "Run VM on image"
 			fi
 			whiptail_menu_option_add "$OPTION_ID_FLASH_IMAGE" "Flash image on a ${OUTPUT_DEVICE_NAME_FOR_HUMAN}"
 		fi
@@ -179,9 +210,9 @@ main_menu()
 	fi
 
 	if [ "$DIFFICULTY" == "expert" ] && [ "${__USER_INTERACTION_MAIN_MENU_PREVIOUS_ITEM}" != "" ] ; then
-		whiptail_menu_set_default_item "${__USER_INTERACTION_MAIN_MENU_PREVIOUS_ITEM}"
+		whiptail_menu_set_default_item_force "${__USER_INTERACTION_MAIN_MENU_PREVIOUS_ITEM}"
 	elif [ "${__USER_INTERACTION_MAIN_MENU_PREVIOUS_ITEM}" == "1" ] ; then
-		whiptail_menu_set_default_item "${OPTION_ID_FLASH_IMAGE}"
+		whiptail_menu_set_default_item_force "${OPTION_ID_FLASH_IMAGE}"
 	fi
 	
 	whiptail_menu_execute "Main menu" "Please select build option"

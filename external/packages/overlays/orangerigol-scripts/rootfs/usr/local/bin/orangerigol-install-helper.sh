@@ -21,27 +21,42 @@ ARCH=$(dpkg --print-architecture)
 
 packages_reset()
 {
-	unset PACKAGES_LISTS
-	unset PACKAGES_OPTIONS
 	PACKAGES_LISTS=()
 	PACKAGES_OPTIONS=()
 }
 
 # This function takes following input:
-# $1 - string with packages names
-# pkg_option_norecommends (when 1, it will be installed without recommended packages)
-# pkg_option_yes (when 1, it will pass yes option to pkg manager)
+# Args: packages names
+# Var pkg_option_norecommends (when 1, it will be installed without recommended packages)
+# Var pkg_option_yes (when 1, it will pass yes option to pkg manager)
 packages_add()
 {
 	unset OPTIONS
 	OPTIONS=""
 	PACKAGES_LISTS+=("`echo -n ${*}`")
-	[ "$pkg_option_norecommends" != "1" ] || OPTIONS+="norecommends "
-	[ "$pkg_option_yes" != "1" ] || OPTIONS+="yes "
+	[ "$pkg_option_norecommends" == "1" ] && OPTIONS+="norecommends "
+	[ "$pkg_option_yes" == "1" ] && OPTIONS+="yes "
+	[ "$pkg_option_ignoremissing" == "1" ] && OPTIONS+="ignoremissing "
 	PACKAGES_OPTIONS+=("$OPTIONS")
 }
 
-package_install_key()
+packages_add_if_available()
+{
+	local request="${@}"
+	local toadd=()
+	
+	for pkg in $request
+	do
+		#if apt-cache pkgnames | grep -F "$pkg" &> /dev/null ; then
+		if [ "$(apt-cache showpkg "$pkg" | awk 'NR==3')" ] ; then
+			toadd+=($pkg)
+		fi
+	done
+	
+	packages_add ${toadd[@]}
+}
+
+__package_install_key()
 {
 	KEY=$1
 	
@@ -51,14 +66,15 @@ package_install_key()
 	fi
 	
 	unset COMMAND
-	COMMAND="apt-get install "
-	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep "yes")" == "" ] || COMMAND+=" -y "
-	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep "norecommends")" == "" ] || COMMAND+=" --no-install-recommends "
+	COMMAND="apt-get install --show-progress "
+	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep -F "yes")" == "" ] || COMMAND+=" -y "
+	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep -F "norecommends")" == "" ] || COMMAND+=" --no-install-recommends "
+	[ "$(echo ${PACKAGES_OPTIONS[${KEY}]} | grep -F "ignoremissing")" == "" ] || COMMAND+=" --ignore-missing "
 	COMMAND+="${PACKAGES_LISTS[$KEY]}"
 	
 	((NUM=KEY+1))
 	echo -e "\033[0;32mInstalling packages part ${NUM}/${#PACKAGES_LISTS[@]}\033[0m"
-	echo -e "\033[0;32mPackages to install: ${PACKAGES_LISTS[$KEY]}\033[0m"
+	echo -e "\033[0;32m${COMMAND}\033[0m"
 	$COMMAND
 }
 
@@ -67,8 +83,9 @@ packages_install_all()
 	apt-get update
 	for key in "${!PACKAGES_LISTS[@]}"
 	do
-		package_install_key $key
+		[ "$PACKAGES_LISTS[${KEY}]" == "" ] || __package_install_key $key
 	done
+	packages_reset
 }
 
 packages_reset

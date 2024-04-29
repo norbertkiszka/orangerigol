@@ -23,8 +23,7 @@ BUILD_KERNEL=""
 BUILD_MODULE=""
 
 # TODO: Auto/manual sources change - maybe take it from host?
-SOURCES="http://ftp.de.debian.org/debian/"
-METHOD="download"
+
 KERNEL_NAME="linux4.4.179"
 UNTAR="tar -xpf"
 CORES=$(nproc --ignore=1)

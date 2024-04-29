@@ -1,8 +1,10 @@
 ## What is this?
 
-This is a build script to create Debian/Linux 12 (currently newest stable) based system to work on a Rigol oscilloscopes based on a RK3399 CPU (arm64) and x86 based machines.
+This is a build script to create Debian or Ubuntu based system to work on a Rigol oscilloscopes based on a RK3399 CPU (arm64) and x86 based machines.
 
-Uses user friendly menus - no need to be sys expert.
+Disk, pendrive and SD card can be flashed directly from main menu (ofc. only when image was build).
+
+User friendly menus - no need to be sys expert.
 
 ## Currently supported boards (devices)
 
@@ -14,6 +16,8 @@ SoC | Boards |
 | AMD64 | EFI, BIOS |
 
 More devices are planned.
+
+Currently Ubuntu is unavailable on x86 32 bit version (x86 64 bit and arm64 only).
 
 Detailed oscilloscopes list for SEO:
 
@@ -27,7 +31,7 @@ Detailed oscilloscopes list for SEO:
 
 ## How to use it?
 
-As for now, it works only with Debian based systems. Debian 12 is highly recommended, since 11 was tested very long time ago.
+As for now, it requires Debian 12 to run this script. Other distros are planned.
 
 Clone repository:
 

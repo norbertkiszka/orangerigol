@@ -53,7 +53,7 @@ else
 	useradd -p $DEBUSER -s /bin/bash -u $DEBUSER_UID -U $DEBUSER -d /home/$DEBUSER
 fi
 
-cp -R /etc/skel/.* /home/$DEBUSER
+rsync -a /etc/skel/.[^.]* /home/$DEBUSER
 chown -R $DEBUSER_UID:$DEBUSER_UID /home/$DEBUSER
 chmod 700 /home/$DEBUSER
 echo "$DEBUSER:$DEBUSER" | chpasswd

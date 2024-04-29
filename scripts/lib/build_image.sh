@@ -7,7 +7,7 @@ generate_image_filename()
 {
 	IMAGENAME="OrangeRigol-v${BUILD_VERSION_TEXT}"
 	[ "${BUILD_GIT_SHORT}" == "" ] || IMAGENAME="${IMAGENAME}-${BUILD_GIT_SHORT}"
-	IMAGENAME="${IMAGENAME}_${BOARD}_Debian_${DISTRO}"
+	IMAGENAME="${IMAGENAME}_${BOARD}_${OS}_${DISTRO}"
 	IMAGENAME="${IMAGENAME}_${IMAGETYPE}"
 	[ "${KERNEL_METHOD}" == "compile" ] && IMAGENAME="${IMAGENAME}_${KERNEL_NAME}"
 	IMAGE="$BUILD/images/$IMAGENAME.img"
@@ -47,6 +47,9 @@ build_image_with_grub()
 	--new 2::+100M --typecode=2:ef00 --change-name=2:'EFI System' \
 	--new 3::-0 --typecode=3:8300 --change-name=3:'rootfs' \
 	"${TMPIMAGE}"
+	
+	# Set partition UUID same as FS UUID - otherwise Ubuntu kernel will not find proper root fs
+	sgdisk -u "3:${ROOT_UUID}" ${TMPIMAGE}
 	
 	offset=$(sys_partition_get_offset_in_bytes "${TMPIMAGE}" 3)
 	sectors=$(sys_partition_get_size "${TMPIMAGE}" 3)
@@ -94,26 +97,23 @@ build_image_with_grub()
 	
 	if [ "${KERNEL_METHOD}" == "distro" ] ; then
 		build_info "Installing Linux kernel inside mounted image"
-		cat > "${TEMP}/install_kernel" <<EOF
-#!/bin/bash
-set -e
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-if [ "${ARCH}" == "amd64" ] ; then
-	apt-get -y install linux-image-amd64
-else
-	apt-get -y install linux-image-686
-fi
-EOF
-		chmod +x "${TEMP}/install_kernel"
-		build_chroot "${TEMP}" /install_kernel
-		rm -f "${TEMP}/install_kernel"
+		build_chroot "${TEMP}" orangerigol-install-kernel-latest
 	fi
 	
 	build_info "Installing GRUB bootloader on a image"
 	
 	mkdir -p "${TEMP}/boot/efi"
 	sys_mount_tmp ${LOOPDEV}p2 "${TEMP}/boot/efi"
+	
+	mkdir -p "${TEMP}/usr/local/grub-bios/etc/default/"
+	cat >> "${TEMP}/usr/local/grub-bios/etc/default/grub" <<EOF
+GRUB_DEVICE_UUID=${ROOT_UUID}
+GRUB_CMDLINE_LINUX="root=PARTUUID=${ROOT_UUID} ro fsck.repair=yes"
+EOF
+	mkdir -p "${TEMP}/boot/grub"
+# 	cat > "${TEMP}/boot/grub/device.map" <<EOF
+# (hd0)   ${LOOPDEV}
+# EOF
 	
 	cat > "${TEMP}/install_grub" <<EOF
 #!/bin/bash
@@ -123,16 +123,16 @@ export LANGUAGE=C
 export LC_CTYPE=C 2> /dev/null
 export LC_ALL=C 2> /dev/null
 
-mkdir -p /boot/grub
 ln -s /boot/grub /boot/grub2
-/usr/local/grub-bios/sbin/grub-mkconfig -o /boot/grub/grub.cfg
 /usr/local/grub-bios/sbin/grub-install --modules="ext2 part_gpt video_fb all_video boot part_gpt ntfs exfat fat" "${LOOPDEV}"
+/usr/local/grub-bios/sbin/grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 	chmod +x "${TEMP}/install_grub"
 	build_chroot "${TEMP}" /install_grub
 	mkdir -p "${TEMP}/boot/grub/fonts"
 	cp "${EXTER}/grub_fonts/unicode.pf2" "${TEMP}/boot/grub/fonts/"
 	rm -f "${TEMP}/install_grub"
+	sed -i "s#root=${LOOPDEV}p3##" "${TEMP}/boot/grub/grub.cfg"
 	
 	mkdir -p "${TEMP}/usr/local/grub-efi/bin"
 	mkdir -p "${TEMP}/usr/local/grub-efi/sbin"
@@ -152,6 +152,8 @@ EOF
 	
 	cat >> "${TEMP}/usr/local/grub-efi/etc/default/grub" <<EOF
 GRUB_FONT="/boot/grub/fonts/unicode.pf2"
+GRUB_DEVICE_UUID="${ROOT_UUID}"
+GRUB_CMDLINE_LINUX="root=PARTUUID=${ROOT_UUID} ro fsck.repair=yes"
 EOF
 	
 	cat > "${TEMP}/boot/efi/EFI/BOOT/grub.cfg" <<EOF
@@ -182,6 +184,7 @@ EOF
 	mkdir -p "${TEMP}/boot/grub/fonts"
 	cp "${EXTER}/grub_fonts/unicode.pf2" "${TEMP}/boot/grub/fonts/"
 	rm -f "${TEMP}/install_grub_efi"
+	sed -i "s#root=${LOOPDEV}p3##" "${TEMP}/boot/grub/grub-efi.cfg"
 	
 	sync
 	sys_umount "${TEMP}/boot/efi"

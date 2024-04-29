@@ -6,16 +6,20 @@
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
+if [ ! -e /etc/locale.gen ] ; then
+	apt-get update
+	apt-get -y install locales
+fi
 sed -i '/en_US.UTF-8 UTF-8/s/^# //g' /etc/locale.gen
+mkdir -p /usr/local/share/locale
+mkdir -p /usr/share/locale
 locale-gen
+mkdir -p /etc/default
 echo -e "LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US:en\"\nLC_CTYPE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" > /etc/default/locale
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
 export LC_CTYPE="en_US.UTF-8" 2> /dev/null
 export LC_ALL="en_US.UTF-8" 2> /dev/null
-
-mkdir -p /usr/local/share/locale
-mkdir -p /usr/share/locale
 
 addgroup adm --system --quiet || true
 addgroup video --system --quiet || true
@@ -33,5 +37,8 @@ update-alternatives --set editor /bin/nano
 update-alternatives  --auto editor
 
 mkdir -p /etc/sudoers.d
-addgroup --firstgid 1100 --quiet sudo_nopasswd || true
+addgroup --quiet sudo_nopasswd || true
 echo "%sudo_nopasswd	ALL=NOPASSWD: ALL" > /etc/sudoers.d/group-sudo_nopasswd
+
+# Allow ping for non-root users
+setcap cap_net_raw+p /usr/bin/ping || true

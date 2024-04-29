@@ -17,21 +17,24 @@ deboostrap_rootfs() {
 	# this is updated very seldom, so is ok to hardcode
 	#debian_archive_keyring_deb="${SOURCES}/pool/main/d/debian-archive-keyring/debian-archive-keyring_2019.1_all.deb"
 	debian_archive_keyring_deb="http://ftp.de.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2023.4_all.deb"
+	[ "${OS}" == "ubuntu" ] && debian_archive_keyring_deb="http://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2023.11.28.1_all.deb"
 	wget -O keyring.deb "$debian_archive_keyring_deb"
 	ar -x keyring.deb && rm -f control.tar.gz debian-binary && rm -f keyring.deb
 	DATA=$(ls data.tar.*) && compress=${DATA#data.tar.}
 
-	KR=debian-archive-keyring.gpg
+	KR="debian-archive-keyring.gpg"
+	[ "${OS}" == "ubuntu" ] && KR="ubuntu-archive-keyring.gpg"
 	tar --strip-components=4 -xvf "$DATA"
 	ls "$DATA"
 	rm -f "$DATA"
-
-	debootstrap --include="locales,base-files,base-passwd,debian-keyring,apt-utils,gawk,adduser,tar,perl,bash,bash-completion" --arch="${ARCH}" --keyring="${TEMP}/${KR}" --foreign "${DIST}" rootfs "${SOURCES}"
+	
+	debootstrap --include="locales,base-files,base-passwd,apt-utils,gawk,adduser,tar,perl,bash,bash-completion" --arch="${ARCH}" --keyring="${TEMP}/${KR}" --foreign "${DIST}" rootfs "${SOURCES}"
 
 	chroot rootfs /debootstrap/debootstrap --second-stage
 	
 	mkdir -p "${TEMP}/rootfs/etc/orangerigol"
 	echo "debootstrap" > "${TEMP}/rootfs/etc/orangerigol/buildstage"
+	echo "${ARCH}" > "${TEMP}/rootfs/etc/orangerigol/arch"
 	
 	tar -C "${TEMP}/rootfs" -a -cf "${TGZ}" .
 	#rm -fr "${TEMP}/rootfs"
@@ -133,7 +136,7 @@ add_overlays_postinstall()
 	rm -rf $DEST/etc/update-motd.d/*
 	add_overlay motd
 	#add_overlay mali-proprietary-driver
-	if [ "$(cat $DEST/etc/orangerigol/buildstage | grep "desktop")" != "" ] ; then
+	if [ "$(cat $DEST/etc/orangerigol/buildstage | grep -F "desktop")" != "" ] ; then
 		if [ "$(awk -F: '$3 == 1000 {print $1}' "${DEST}/etc/passwd")" != "" ] ; then
 			# We have "main" user, so make him autologin
 			add_overlay gdm3_autologin
@@ -166,7 +169,8 @@ add_apt_sources()
 	# Make sure sources.list exists
 	mkdir -p $DEST/etc/apt
 	touch "${aptsrcfile}"
-	cat > "$aptsrcfile" <<EOF
+	if [ "${OS}" == "debian" ] ; then
+		cat > "$aptsrcfile" <<EOF
 deb ${SOURCES} ${release} main contrib non-free non-free-firmware
 # deb-src ${SOURCES} ${release} main contrib non-free 
 deb http://security.debian.org/debian-security ${release}-security main contrib non-free non-free-firmware
@@ -175,6 +179,13 @@ deb http://security.debian.org/debian-security ${release}-security main contrib 
 deb ${SOURCES} bullseye main non-free contrib
 deb http://security.debian.org/debian-security bullseye-security main contrib non-free
 EOF
+# 	else
+# 		cat > "$aptsrcfile" <<EOF
+# deb ${SOURCES} ${release} main restricted universe multiverse
+# deb http://security.ubuntu.com/ubuntu ${release}-security main restricted universe multiverse
+# deb ${SOURCES} ${release}-updates main restricted universe multiverse
+# EOF
+	fi
 }
 
 # This is where Debian is born
@@ -184,10 +195,6 @@ prepare_env()
 	
 	mkdir -p $DEST
 	
-	ROOTFS="${DISTRO}-base-${ARCH}.tar.gz"
-	METHOD="debootstrap"
-	SOURCES="http://ftp.de.debian.org/debian/"
-
 	TARBALL="$EXTER/$(basename $ROOTFS)"
 
 	if [ ! -e "$TARBALL" ]; then
@@ -208,8 +215,11 @@ prepare_env()
 	build_info "Base system is extracted in ${DEST}"
 	
 	# For a compatilibity with v0.1
+	# TODO: delete if its old (mtime)
 	if [ ! -d "${DEST}/etc/orangerigol" ] || [ ! -e "${DEST}/etc/orangerigol/buildstage" ] ; then
-		build_warning "Looks like tarball is outdated. Please consider deleting it in external/*.tar.gz (that will force to make new one)."
+		if [ "${METHOD}" != "download" ] ; then
+			build_warning "Looks like tarball is outdated. Please consider deleting it in external/*.tar.gz (that will force to make new one)."
+		fi
 		mkdir -p "${DEST}/etc/orangerigol"
 		echo "debootstrap" > "${DEST}/etc/orangerigol/buildstage"
 	fi
@@ -259,7 +269,7 @@ add_user_root()
 export DEBIAN_FRONTEND=noninteractive
 mkdir -p /root
 [ "\$(id -nu 0 2> /dev/null)" != "" ] || useradd -p rigol -s /bin/bash -u 0 -U root -d /root || echo "User root already exists..."
-cp -R /etc/skel/.* /root
+rsync -a /etc/skel/.[^.]* /root/
 chown -R 0:0 /root
 chmod 700 /root
 echo root:rigol | chpasswd
@@ -412,6 +422,7 @@ build_rootfs()
 		fi
 	fi
 	
+	echo "${ARCH}" > "${DEST}/etc/orangerigol/arch"
 	add_overlays_always
 	
 	if [ "$(cat "${DEST}/etc/orangerigol/buildstage" | grep "base_system")" == "" ] ; then

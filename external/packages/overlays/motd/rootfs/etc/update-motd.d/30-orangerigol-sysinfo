@@ -19,7 +19,8 @@ AMB_TEMP_LIMIT=50
 
 # don't edit below here
 
-function display() {
+function display()
+{
 	# $1=name $2=value $3=red_limit $4=minimal_show_limit $5=unit $6=after $7=acs/desc{
 	# battery red color is opposite, lower number
 	if [[ "$1" == "Battery" ]]; then local great="<"; else local great=">"; fi
@@ -32,8 +33,10 @@ function display() {
 	fi
 } # display
 
-function getboardtemp() {
-	board_temp=$(expr $(cat /sys/class/thermal/thermal_zone0/temp) \/ 1000)
+function getboardtemp()
+{
+	board_temp=""
+	[ -e /sys/class/thermal/thermal_zone0/temp ] && board_temp=$(expr $(cat /sys/class/thermal/thermal_zone0/temp) \/ 1000)
 } # getboardtemp
 
 
@@ -45,7 +48,8 @@ function getboardtemp() {
 #		tail -n2 | sed ':a;N;$!ba;s/\n/,/g'
 #} # get_ip_addresses
 
-function get_ip_addresses() {
+function get_ip_addresses()
+{
 	local ips=()
 	for f in /sys/class/net/*; do
 		local intf=$(basename $f)
@@ -61,8 +65,8 @@ function get_ip_addresses() {
 	echo "${ips[@]}"
 } # get_ip_addresses
 
-function storage_info() {
-	# storage info
+function storage_info()
+{
 	RootInfo=$(df -h /)
 	root_usage=$(awk '/\// {print $(NF-1)}' <<<${RootInfo} | sed 's/%//g')
 	root_total=$(awk '/\// {print $(NF-4)}' <<<${RootInfo})
@@ -72,6 +76,7 @@ function storage_info() {
 		storage_total=$(awk '/\// {print $(NF-4)}' <<<${StorageInfo})
 	fi
 } # storage_info
+
 # query various systems and send some stuff to the background for overall faster execution.
 # Works only with ambienttemp and batteryinfo since A20 is slow enough :)
 #amb_temp=$(ambienttemp &)

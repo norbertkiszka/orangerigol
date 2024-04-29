@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Author: Norbert Kiszka and others
+# License: GPL v2
+
+set -e
+export DEBIAN_FRONTEND=noninteractive
+
+ARCH="$(cat /etc/orangerigol/arch)"
+
+apt-get update
+
+if grep -i "ubuntu" /etc/os-release > /dev/null ; then
+	apt-get -y install "linux-image-generic-hwe-$(lsb_release -r | awk '{print $2}')" --no-install-recommends
+	exit
+fi
+
+if [ "${ARCH}" == "amd64" ] ; then
+	apt-get -y install linux-image-amd64 --no-install-recommends
+else
+	apt-get -y install linux-image-686 --no-install-recommends
+fi
