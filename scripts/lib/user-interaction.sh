@@ -199,7 +199,7 @@ main_menu()
 	if [ "$DIFFICULTY" == "expert" ] ; then
 		if [ "$(ls $BUILD/images/*.img 2> /dev/null)" != "" ] ; then
 			if [ "$(uname -m)" == "x86_64" ] && modprobe kvm 2> /dev/null && which kvm > /dev/null && [[ "${ARCH}" == "amd64" || "${ARCH}" == "i386" ]] ; then
-				whiptail_menu_option_add "14" "Run VM on image"
+				whiptail_menu_option_add "14" "Run VM from image"
 			elif [ "$(uname -m)" == "i386" ] && modprobe kvm 2> /dev/null && which kvm > /dev/null && [ "${ARCH}" == "i386" ] ; then
 				whiptail_menu_option_add "14" "Run VM on image"
 			fi
