@@ -38,8 +38,8 @@ This build script currenty only works on a Debian 12 "bookworm" as a host system
 Clone repository:
 
 ```bash
-git clone --recurse-submodules https://github.com/norbertkiszka/rigol-orangerigol-build.git
-cd rigol-orangerigol-build
+git clone --recurse-submodules https://github.com/norbertkiszka/orangerigol.git
+cd orangerigol
 ```
 
 After that, execute one of those scripts:
