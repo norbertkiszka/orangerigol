@@ -176,8 +176,8 @@ deb ${SOURCES} ${release} main contrib non-free non-free-firmware
 deb http://security.debian.org/debian-security ${release}-security main contrib non-free non-free-firmware
 
 # for older packages (oldstable):
-deb ${SOURCES} bullseye main non-free contrib
-deb http://security.debian.org/debian-security bullseye-security main contrib non-free
+#deb ${SOURCES} bullseye main non-free contrib
+#deb http://security.debian.org/debian-security bullseye-security main contrib non-free
 EOF
 # 	else
 # 		cat > "$aptsrcfile" <<EOF
