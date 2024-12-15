@@ -154,6 +154,7 @@ modules_update()
 	
 	# Remove old modules
 	rm -rf "${ROOTFS_PATH}/lib/modules"
+	mkdir -p "${ROOTFS_PATH}/lib/modules"
 	
 	#cp -rfa "${BUILD}/lib/modules" "${ROOTFS_PATH}/lib/"
 	sys_cpdir "${BUILD}/lib/modules/" "${ROOTFS_PATH}/lib/modules/"
