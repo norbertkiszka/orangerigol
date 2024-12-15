@@ -156,7 +156,8 @@ modules_update()
 	rm -rf "${ROOTFS_PATH}/lib/modules"
 	
 	#cp -rfa "${BUILD}/lib/modules" "${ROOTFS_PATH}/lib/"
-	sys_cpdir "${BUILD}/lib/modules/" "${ROOTFS_PATH}/lib/"
+	sys_cpdir "${BUILD}/lib/modules/" "${ROOTFS_PATH}/lib/modules/"
+	build_info "Syncing ..."
 	sync
 }
 
