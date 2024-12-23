@@ -14,7 +14,7 @@ pkg_option_norecommends=0 ; packages_add dialog coreutils linuxinfo bash bash-co
 pkg_option_norecommends=0 ; packages_add base-files locales gpg gpgv apt-utils mount xdg-user-dirs
 pkg_option_norecommends=0 ; packages_add dosfstools curl xz-utils iw rfkill ifupdown-ng wget logrotate
 pkg_option_norecommends=0 ; packages_add wpasupplicant openssh-server alsa-utils moc etherwake iputils-ping
-pkg_option_norecommends=0 ; packages_add rsync nano pv pipemeter sysstat iproute2 iptables
+pkg_option_norecommends=0 ; packages_add rsync nano pv pipemeter sysstat iproute2 iptables network-manager
 pkg_option_norecommends=0 ; packages_add gpm vim parted git subversion autoconf gcc libtool traceroute
 pkg_option_norecommends=0 ; packages_add libsysfs-dev pkg-config libdrm-dev
 pkg_option_norecommends=0 ; packages_add man extundelete lzma edid-decode
@@ -31,10 +31,11 @@ pkg_option_norecommends=0 ; packages_add ethtool tcpdump strace libelf-dev libdw
 pkg_option_norecommends=0 ; packages_add libdwarf++0 libdwarf-dev openssl ca-certificates libssl-dev
 # pkg_option_norecommends=0 ; packages_add pulseaudio libunwind-16 libunwind-16-dev
 pkg_option_norecommends=0 ; packages_add sudo net-tools g++ libjpeg-dev unrar sshfs avrdude dfu-programmer emu8051
-pkg_option_norecommends=0 ; packages_add esptool gputils simavr avrp ntp ntpdate efibootmgr
+pkg_option_norecommends=0 ; packages_add gputils simavr avrp ntp ntpdate efibootmgr
 pkg_option_norecommends=0 ; packages_add_if_available memtest86+ firmware-linux-free firmware-linux-nonfree firmware-zd1211 firmware-realtek 
 pkg_option_ignoremissing=1
 pkg_option_norecommends=0 ; packages_add_if_available linux-firmware bluez-firmware openfpgaloader rkdeveloptool extrepo-offline-data
+pkg_option_norecommends=0 ; packages_add rsyslog
 pkg_option_ignoremissing=0
 
 packages_install_all
