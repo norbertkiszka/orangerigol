@@ -8,12 +8,12 @@ User friendly menus - no need to be sys expert.
 
 ## Currently supported boards (devices)
 
-SoC | Boards |
-|:--|:--|
-| Rockchip RK3399 | Rigol DHO800 series |
-| Rockchip RK3399 | Rigol DHO900 series |
-| x86 i686 | EFI, BIOS |
-| AMD64 | EFI, BIOS |
+SoC | Boards | Bootloader
+|:--|:--|:--|
+| Rockchip RK3399 | Rigol DHO800 series | **[U-Boot](https://github.com/norbertkiszka/rigol-orangerigol-uboot_2017.09_light)** |
+| Rockchip RK3399 | Rigol DHO900 series | **[U-Boot](https://github.com/norbertkiszka/rigol-orangerigol-uboot_2017.09_light)** |
+| x86 i686 | EFI, BIOS | **[Grub](https://git.savannah.gnu.org/cgit/grub.git/tag/?h=grub-2.12)** |
+| AMD64 | EFI, BIOS | **[Grub](https://git.savannah.gnu.org/cgit/grub.git/tag/?h=grub-2.12)** |
 
 More devices are planned.
 
