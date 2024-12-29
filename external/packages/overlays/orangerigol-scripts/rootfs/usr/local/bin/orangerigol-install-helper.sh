@@ -48,7 +48,7 @@ packages_add_if_available()
 	for pkg in $request
 	do
 		#if apt-cache pkgnames | grep -F "$pkg" &> /dev/null ; then
-		if [ "$(apt-cache showpkg "$pkg" | awk 'NR==3')" ] ; then
+		if [ "$(apt-cache showpkg ${pkg} | awk 'NR==3')" != "" ] ; then
 			toadd+=($pkg)
 		fi
 	done
