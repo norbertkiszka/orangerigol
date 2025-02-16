@@ -10,7 +10,7 @@ User friendly menus - no need to be a sys expert. Especially in a mode for begin
 
 Two modes - for beginners and for experts.
 
-When target system is under build progress (chroot), it uses host system apt cache (/var/cache/apt/archives/) to make it faster, less network usage and less disk space used. Downside is, You can't install or remove host system packages, when this script is makinkg build progress.
+When target system is under build progress (chroot), it uses host system apt cache (/var/cache/apt/archives/) to make it faster, less network usage and less disk space used. Downside is, You can't install or remove host system packages, when this script is making build progress.
 
 If target architecture is AMD64 (modern PC), it can run virtual machine from main menu from image that was built previously. KVM is required for that, but most likely You already have it. For efficiency and safety, it's better to have virtualization enabled in Your BIOS menu, which most likely is already enabled.
 
@@ -24,7 +24,7 @@ It automatically detects drives to work with and ignores system disk in order to
 
 Current progress is saved, so in case of error or interruption, at Your choice, You can restart build progress from (almost) same point as it was interrupted.
 
-Target graphical enviroment is Mate with some initiall configuration, to make it better both for Linux and Windows users.
+Target graphical environment is Mate with some initial configuration, to make it better both for Linux and Windows users.
 
 Target system has some basic apps, games and engineering software for better experience at beginning of using it.
 
@@ -62,7 +62,7 @@ Detailed oscilloscopes list for SEO:
 
 ## Requirements
 
-This build script currenty only works on a Debian 12 "bookworm" as a host system.
+This build script currently only works on a Debian 12 "bookworm" as a host system.
 
 ## How to use it?
 
@@ -106,7 +106,7 @@ Finally You can remove card from a card reader (or unplug disk) and put it into 
 
 - Choice of installing base system (server) or a user friendly desktop (graphical interface) with a bunch of a desktop software (browser, video player, document viewers, etc).
 - When interrupted by user or due to error, it will ask to continue or to delete rootfs and start from the beginning. It works by saving current progress and not doing works that was already done.
-- Preinstalled desktop setup with Mate enviroment (supported and popular fork of a Gnome 2) - ready to use from first start. Since it's Debian or Ubuntu (at Your choice), later You can install another graphical enviroment by Apt or graphical Synaptic.
+- Preinstalled desktop setup with Mate environment (supported and popular fork of a Gnome 2) - ready to use from first start. Since it's Debian or Ubuntu (at Your choice), later You can install another graphical environment by Apt or graphical Synaptic.
 - Possibility to flash SD card, disk or USB pendrive directly from a menu in this script. After flashing, it will resize fs to fullfil whole disk size.
 
 ## Videos and screenshots
@@ -136,7 +136,7 @@ Finally You can remove card from a card reader (or unplug disk) and put it into 
 ## Current work progress / TODO
 
 - Change kernel from **[4.4.179](https://github.com/norbertkiszka/rigol-orangerigol-linux_4.4.179)** to **[5.10.209](https://github.com/norbertkiszka/Linux-5.10-Rockchip)**.
-- Change gdm3 (login manager) into nodm (fast autologin). That and newer kernel drops boot time to the ~28 seconds (DHO924S) into fullly working graphical enviroment, instead of about 50 seconds.
+- Change gdm3 (login manager) into nodm (fast autologin). That and newer kernel drops boot time to the ~28 seconds (DHO924S) into fullly working graphical environment, instead of about 50 seconds.
 - Run original Rigol app with **[Anbox ARM64](https://github.com/norbertkiszka/anbox-arm64)**.
 - Reverse engineer libscope-auklet.so (Rigol app) in order to hack it and/or make a better app.
 - Make menus less time consuming and group options into smaller menus.
@@ -146,13 +146,13 @@ Finally You can remove card from a card reader (or unplug disk) and put it into 
 
 ## How much resources it uses?
 
-After full boot and login into Mate desktop enviroment, by deafult it will use less than 500 MiB RAM.
+After full boot and login into Mate desktop environment, by defult it will use less than 500 MiB RAM.
 CPU usage when not doing anything (like a using browser or anything) is almost zero.
 
-Space used: base system takes around 2 - 2.5 GiB and with desktop enviroment it takes around 8-9 GiB.
+Space used: base system takes around 2 - 2.5 GiB and with desktop environment it takes around 8-9 GiB.
 
 ## Default password
 
 Password for root user is: rigol.
 Script asks for a username which will be also default password.
-Every user can change his/her password via passwd command or within gui program mate-about-me (system -> personal -> about me).
+Every user can change his/her password via passwd command or within graphical program mate-about-me (system -> personal -> about me).
