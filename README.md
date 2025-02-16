@@ -127,16 +127,17 @@ Finally You can remove card from a card reader (or unplug disk) and put it into 
 
 ## Current status on a Rigol oscilloscopes
 
-- Its stable - no crashes, except reboot (see below).
-- Does reboot instead of shutdown and sometimes makes kernel panic when tried to reset board.
+- It's stable - no crashes, except reboot (see below).
+- Does reboot instead of shutdown and sometimes makes kernel panic when tried to reset (reboot) board.
 - Oscilloscope app is not fully ported (its not here yet).
 - Currently tested only on a Rigol DHO924S.
 - Boot time ~33 seconds to a GDM3 graphical login manager. After ~6 seconds autologin will be performed.
 
 ## Current work progress / TODO
 
-- Change kernel from **[4.4.179](https://github.com/norbertkiszka/rigol-orangerigol-linux_4.4.179)** to **[5.10.209](https://github.com/norbertkiszka/Linux-5.10-Rockchip)**.
+- For oscilloscopes, change kernel from **[4.4.179](https://github.com/norbertkiszka/rigol-orangerigol-linux_4.4.179)** to **[5.10.209](https://github.com/norbertkiszka/Linux-5.10-Rockchip)**.
 - Change gdm3 (login manager) into nodm (fast autologin). That and newer kernel drops boot time to the ~28 seconds (DHO924S) into fullly working graphical environment, instead of about 50 seconds.
+- Propmt for login manager or autologin.
 - Run original Rigol app with **[Anbox ARM64](https://github.com/norbertkiszka/anbox-arm64)**.
 - Reverse engineer libscope-auklet.so (Rigol app) in order to hack it and/or make a better app.
 - Make menus less time consuming and group options into smaller menus.
