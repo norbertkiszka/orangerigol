@@ -269,11 +269,12 @@ main_menu()
 			build_success "Succeed to update U-Boot bootloader in ${INPUT_PATH}."
 			;;
 		"9")
+			OLD_HASH=$(git_last_commit_hash_short)
 			pull
-			if [ "$(echo $BUILD_GIT_SHORT | grep -F `git_last_commit_hash_short`)" ] ; then
-				build_success "Current version is already latest"
+			if [ "$(git_last_commit_hash_short)" == "$OLD_HASH" ] ; then
+				build_success "Current version is already latest."
 			else
-				build_success "Build was updated. Old hash: ${BUILD_GIT_SHORT}. New hash: $(git_last_commit_hash_short)."
+				build_success "Build was updated. Previous commit: ${OLD_HASH}. New (current) commit: $(git_last_commit_hash_short)."
 				set +e
 				set +a
 				export -n LIB_BASH_VERSION
