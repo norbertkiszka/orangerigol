@@ -24,7 +24,7 @@ It automatically detects drives to work with and ignores system disk in order to
 
 Current progress is saved, so in case of error or interruption, at Your choice, You can restart build progress from (almost) same point as it was interrupted.
 
-Target graphical environment is Mate with some initial configuration, to make it better both for Linux and Windows users.
+Target graphical environment is Mate with some initial configuration (theme and applets), to make it better both for Linux and Windows users.
 
 Target system has some basic apps, games and engineering software for better experience at beginning of using it.
 
