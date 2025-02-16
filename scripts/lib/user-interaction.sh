@@ -270,11 +270,26 @@ main_menu()
 			;;
 		"9")
 			OLD_HASH=$(git_last_commit_hash_short)
+			OLD_HASH_LIB_BASH=$(git_last_commit_hash_short ./scripts/lib-bash)
 			pull
-			if [ "$(git_last_commit_hash_short)" == "$OLD_HASH" ] ; then
-				build_success "Current version is already latest."
+			if [ "$(git_last_commit_hash_short ./scripts/lib-bash)" == "${OLD_HASH_LIB_BASH}" ] ; then
+				_message="Current lib-bash version is already latest. Commit: ${OLD_HASH_LIB_BASH}"
+				[ "$(git_list_modified_files ./scripts/lib-bash)" == "" ] || _message+=" (dirty)"
+				_message+="."
 			else
-				build_success "Build was updated. Previous commit: ${OLD_HASH}. New (current) commit: $(git_last_commit_hash_short)."
+				_message="lib-bash was updated. Previous commit: ${OLD_HASH_LIB_BASH}. New (current) commit: $(git_last_commit_hash_short ./scripts/lib-bash)."
+			fi
+			_message+="
+
+"
+			if [ "$(git_last_commit_hash_short)" == "${OLD_HASH}" ] ; then
+				_message+="Current build version is already latest. Commit: ${OLD_HASH}"
+				[ "$(git_list_modified_files)" == "" ] || _message+=" (dirty)"
+				_message+="."
+				build_success "${_message}"
+			else
+				_message+="Build was updated. Previous commit: ${OLD_HASH}. New (current) commit: $(git_last_commit_hash_short)."
+				build_success "${_message}"
 				set +e
 				set +a
 				export -n LIB_BASH_VERSION
